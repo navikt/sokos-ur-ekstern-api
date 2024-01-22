@@ -20,6 +20,7 @@ val logbackVersion = "1.4.14"
 val logstashVersion = "7.4"
 val swaggerUiVersion= "4.18.2"
 val kotlinLoggingVersion = "3.0.5"
+val commonsCodecVersion = "1.15"
 
 dependencies {
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
@@ -30,6 +31,7 @@ dependencies {
     implementation("io.ktor:ktor-server-auth-jwt:$ktorVersion")
     implementation("io.ktor:ktor-server-double-receive:$ktorVersion")
     implementation("io.ktor:ktor-client-apache:$ktorVersion")
+    implementation("commons-codec:commons-codec:$commonsCodecVersion")
     implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
     implementation("io.ktor:ktor-client-jackson:$ktorVersion")
     implementation("io.ktor:ktor-serialization-jackson:$ktorVersion")
