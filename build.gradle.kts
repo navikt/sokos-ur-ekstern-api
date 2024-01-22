@@ -1,7 +1,7 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 plugins {
-    kotlin("jvm") version "1.9.21"
+    kotlin("jvm") version "1.9.22"
     id("com.github.johnrengelman.shadow") version "8.1.1"
     id("org.hidetake.swagger.generator") version "2.19.2" apply true
 }
@@ -18,7 +18,7 @@ val jacksonVersion = "2.16.1"
 val prometheusVersion = "1.12.2"
 val logbackVersion = "1.4.14"
 val logstashVersion = "7.4"
-val swaggerUiVersion= "4.18.2"
+val swaggerUiVersion= "5.10.3"
 val kotlinLoggingVersion = "3.0.5"
 
 dependencies {
@@ -47,7 +47,7 @@ dependencies {
     swaggerUI("org.webjars:swagger-ui:$swaggerUiVersion")
 
 
-    testImplementation("org.jetbrains.kotlin:kotlin-test:1.9.21")
+    testImplementation("org.jetbrains.kotlin:kotlin-test:1.9.22")
 }
 
 tasks.test {
