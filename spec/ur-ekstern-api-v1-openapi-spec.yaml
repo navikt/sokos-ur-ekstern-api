@@ -1,0 +1,90 @@
+openapi: 3.0.1
+info:
+  title: SOKOS UR ekstern-API
+  description: Tjenestespesifikasjon for SOKOS UR ekstern API<p>Du når oss på Slack kanalen [\#po-utbetaling](https://nav-it.slack.com/archives/CKZADNFBP).
+  version: 1.0.0
+servers:
+  - url: /ur-ekstern/api
+tags:
+  - name: ur-ekstern.v1
+paths:
+  /v1/finn-ytelser:
+    post:
+      tags:
+        - ur-ekstern.v1
+      summary: Finn ytelser (ekstern)
+      operationId: finn-ytelser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Ytelseoppslag'
+        required: true
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Liste over utbetalinger for den angitte id i den angitte
+                  periode.
+                items:
+                  $ref: '#/components/schemas/Utbetaling'
+        401:
+          description: Uautorisert
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: 'Unauthorized'
+        403:
+          description: Tilgang nektet
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: 'Forbidden'
+        500:
+          description: Intern server feil
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: 'Noe gikk galt'
+components:
+  schemas:
+    Ytelseoppslag:
+      required: [fnrEllerOrgnr, fom, tom]
+      type: object
+      properties:
+        fom:
+          type: string
+          format: date
+          description: Fra og med dato
+        tom:
+          type: string
+          format: date
+          description: Til og med dato
+        fnrEllerOrgnr:
+          type: array
+          items:
+            type: string
+          description: |
+            Unik id for identen det søkes utbetalinger for, enten fnr eller dnr.
+    Utbetaling:
+      type: object
+      description: Informasjon om en utbetaling som er gjort.
+      required:
+        - fnrEllerOrgnr
+      properties:
+        fnrEllerOrgnr:
+          type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - bearerAuth: []

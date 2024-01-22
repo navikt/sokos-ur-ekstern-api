@@ -18,7 +18,7 @@ val jacksonVersion = "2.16.1"
 val prometheusVersion = "1.12.2"
 val logbackVersion = "1.4.14"
 val logstashVersion = "7.4"
-val swaggeruiVersion= "4.18.2"
+val swaggerUiVersion= "4.18.2"
 val kotlinLoggingVersion = "3.0.5"
 
 dependencies {
@@ -44,7 +44,7 @@ dependencies {
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
     implementation("io.github.microutils:kotlin-logging-jvm:$kotlinLoggingVersion")
 
-    swaggerUI("org.webjars:swagger-ui:$swaggeruiVersion")
+    swaggerUI("org.webjars:swagger-ui:$swaggerUiVersion")
 
 
     testImplementation("org.jetbrains.kotlin:kotlin-test:1.9.21")
@@ -56,6 +56,14 @@ tasks.test {
 kotlin {
     jvmToolchain(21)
 }
+
+swaggerSources {
+    create("sokos_ur_ekstern").apply {
+        setInputFile(file("spec/ur-ekstern-api-v1-openapi-spec.yaml"))
+        ui.outputDir = layout.buildDirectory.dir("resources/main/api/sokos_ur_ekstern").get().asFile
+    }
+}
+
 tasks {
     withType<ShadowJar>().configureEach {
         enabled = true
@@ -63,6 +71,6 @@ tasks {
         manifest {
             attributes["Main-Class"] = "no.nav.sokos.MainKt"
         }
+        dependsOn(generateSwaggerUI)
     }
-
 }
