@@ -70,6 +70,10 @@ swaggerSources {
 }
 
 tasks {
+    withType<Jar>().configureEach {
+        dependsOn(generateSwaggerUI)
+    }
+
     withType<ShadowJar>().configureEach {
         enabled = true
         archiveFileName.set("app.jar")
