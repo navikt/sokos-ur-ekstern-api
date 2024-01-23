@@ -21,6 +21,7 @@ val logstashVersion = "7.4"
 val swaggerUiVersion= "4.18.2"
 val kotlinLoggingVersion = "3.0.5"
 val commonsCodecVersion = "1.15"
+val nimbusVersion =  "9.37.3"
 
 dependencies {
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
@@ -36,6 +37,8 @@ dependencies {
     implementation("io.ktor:ktor-client-jackson:$ktorVersion")
     implementation("io.ktor:ktor-serialization-jackson:$ktorVersion")
     implementation("io.micrometer:micrometer-registry-prometheus:$prometheusVersion")
+
+    implementation("com.nimbusds:nimbus-jose-jwt:$nimbusVersion")
 
     implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")

@@ -4,6 +4,7 @@ import io.ktor.server.engine.embeddedServer
 import io.ktor.server.engine.stop
 import io.ktor.server.netty.Netty
 import no.nav.sokos.api.installCommonFeatures
+import no.nav.sokos.api.installSecurity
 import no.nav.sokos.api.naisApi
 import no.nav.sokos.api.swaggerApi
 import no.nav.sokos.api.urEksternApi
@@ -25,6 +26,7 @@ class HttpServer(
 
     private val embeddedServer = embeddedServer(Netty, port) {
         installCommonFeatures()
+        installSecurity(appConfig)
         naisApi({ appState.ready }, { appState.running })
         urEksternApi(appConfig.useAuthentication)
         swaggerApi()

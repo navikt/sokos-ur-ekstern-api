@@ -12,17 +12,19 @@ import no.nav.sokos.api.entitet.FinnYtelserRequest
 import no.nav.sokos.api.entitet.Utbetaling
 
 
-val logger = KotlinLogging.logger {  }
+private val logger = KotlinLogging.logger { }
 
 fun Application.urEksternApi(
-    brukAutentisering: Boolean = true
+    useAuthentication: Boolean = true
 ) {
 
     routing {
-        route("ur-ekstern/api") {
-            post("v1/finn-ytelser") {
-                val req: FinnYtelserRequest = call.receive()
-                call.respond(req.fnrEllerOrgnr.map { Utbetaling(it) })
+        authenticate(useAuthentication) {
+            route("ur-ekstern/api") {
+                post("v1/finn-ytelser") {
+                    val req: FinnYtelserRequest = call.receive()
+                    call.respond(req.fnrEllerOrgnr.map { Utbetaling(it) })
+                }
             }
         }
     }

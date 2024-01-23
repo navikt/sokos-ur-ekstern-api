@@ -31,6 +31,18 @@ spec:
     initialDelay: 10
     periodSeconds: 5
     timeout: 5
+  maskinporten:
+    enabled: true
+    scopes:
+      exposes:
+        - name: "ytelser.read" # Scope: nav:reskontro:ytelser.read, subscope: reskontro:ytelser.read
+          enabled: true
+          product: "reskontro"
+          consumers:
+            - name: "NAV"
+              orgno: "889640782"
+      consumes:
+        - name: "nav:reskontro:ytelser.read"
   prometheus:
     enabled: true
     path: /internal/metrics
