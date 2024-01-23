@@ -22,6 +22,7 @@ val swaggerUiVersion= "4.18.2"
 val kotlinLoggingVersion = "3.0.5"
 val commonsCodecVersion = "1.15"
 val nimbusVersion =  "9.37.3"
+val junitVersion = "5.10.1"
 
 dependencies {
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
@@ -53,11 +54,9 @@ dependencies {
 
 
     testImplementation("org.jetbrains.kotlin:kotlin-test:1.9.21")
+    testImplementation("org.junit.jupiter:junit-jupiter:$junitVersion")
 }
 
-tasks.test {
-    useJUnitPlatform()
-}
 kotlin {
     jvmToolchain(21)
 }
@@ -70,6 +69,11 @@ swaggerSources {
 }
 
 tasks {
+
+    withType<Test>().configureEach {
+        useJUnitPlatform()
+        dependsOn(generateSwaggerUI)
+    }
     withType<Jar>().configureEach {
         dependsOn(generateSwaggerUI)
     }
