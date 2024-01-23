@@ -17,7 +17,7 @@ private val logger = KotlinLogging.logger { }
 data class Configuration(
     val appName: String = readProperty("NAIS_APP_NAME"),
     val useAuthentication: Boolean = readProperty("USE_AUTHENTICATION", default = "true") != "false",
-    val azureAdConfig : AzureAd? = if (useAuthentication) AzureAd() else null,
+//    val azureAdConfig : AzureAd? = if (useAuthentication) AzureAd() else null,
     val maskinportenClientConfig: MaskinportenClientConfig = MaskinportenClientConfig(),
     val maskinportenServerConfig: MaskinportenServerConfig = MaskinportenServerConfig()
 ) {
