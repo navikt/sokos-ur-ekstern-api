@@ -14,6 +14,13 @@ paths:
         - ur-ekstern.v1
       summary: Finn ytelser (ekstern)
       operationId: finn-ytelser
+      parameters:
+        - in: header
+          name: x-correlation-id
+          required: true
+          schema:
+            type: string
+            description: Corrolation id
       requestBody:
         content:
           application/json:
