@@ -1,14 +1,13 @@
 package no.nav.sokos.api
 
-import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
 import io.ktor.server.application.call
+import io.ktor.server.response.respond
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.get
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
-import io.prometheus.client.exporter.common.TextFormat
 import no.nav.sokos.metrics.Metrics
 
 fun Application.naisApi(alive: () -> Boolean, ready: () -> Boolean) {
@@ -33,7 +32,7 @@ fun Application.naisApi(alive: () -> Boolean, ready: () -> Boolean) {
                 }
             }
             get("metrics") {
-                call.respondText(ContentType.parse(TextFormat.CONTENT_TYPE_004)) { Metrics.prometheusRegistry.scrape() }
+                call.respond(Metrics.prometheusRegistry.scrape())
             }
         }
     }

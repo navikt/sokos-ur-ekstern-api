@@ -1,5 +1,6 @@
 package no.nav.sokos.api
 
+import com.auth0.jwt.interfaces.Payload
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.ktor.server.auth.Authentication
@@ -19,15 +20,14 @@ fun Application.installSecurity(
         logger.info("Running with authentication")
         install(Authentication) {
             jwt {
-                this.verifier( //TODO Verifiser at denne gjør signature- og issuer-validation
+                verifier(
                     appConfig.maskinportenServerConfig.jwkProvider,
                     appConfig.maskinportenServerConfig.issuer
                 )
                 realm = appConfig.appName
                 validate { credentials ->
                     try {
-                        val scopes = credentials.payload.claims["scope"]?.asString()?.split(" ") ?: emptyList()
-                        require(scopes.contains("nav:reskontro:ytelser.read")) { // TODO Finn ut hvordan vi kan hente ut scope fra NAIS/Maskinporten
+                        require(credentials.payload.scopes().contains("nav:reskontro:ytelser.read")) {
                             "Auth: Valid scope not found in claims".also { logger.info { it } }
                         }
                         JWTPrincipal(credentials.payload)
@@ -43,3 +43,5 @@ fun Application.installSecurity(
 fun Route.authenticate(useAuthentication: Boolean, block: Route.() -> Unit) {
     if (useAuthentication) authenticate { block() } else block()
 }
+
+private fun Payload.scopes(): List<String> = this.claims["scope"]?.asString()?.split(" ") ?: emptyList()
