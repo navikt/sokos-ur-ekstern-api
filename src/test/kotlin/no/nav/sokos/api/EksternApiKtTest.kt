@@ -1,0 +1,58 @@
+package no.nav.sokos.api
+
+import com.atlassian.oai.validator.restassured.OpenApiValidationFilter
+import com.fasterxml.jackson.module.kotlin.readValue
+import io.ktor.server.engine.embeddedServer
+import io.ktor.server.netty.Netty
+import io.restassured.RestAssured
+import io.restassured.config.ObjectMapperConfig
+import io.restassured.config.RestAssuredConfig
+import io.restassured.http.Header
+import no.nav.sokos.api.entitet.FinnYtelserRequest
+import no.nav.sokos.api.entitet.Utbetaling
+import no.nav.sokos.jsonMapper
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
+import java.time.LocalDate
+
+private const val PORT = 21212
+private const val URL = "http://localhost"
+
+class EksternApiKtTest {
+
+    private val validationFilter = OpenApiValidationFilter("spec/ur-ekstern-api-v1-openapi-spec.yaml")
+
+    @Test
+    fun urEksternApi() {
+        val apiResponse = RestAssured.given()
+            .filter(validationFilter)
+            .header(Header("Content-Type", "application/json"))
+            .header(Header("x-correlation-id", "3"))
+            .body(FinnYtelserRequest(LocalDate.now(), LocalDate.now(), listOf("123")))
+            .post("/ur-ekstern/api/v1/finn-ytelser")
+
+        apiResponse.then().statusCode(200)
+
+        assertEquals("123", jsonMapper.readValue<List<Utbetaling>>(apiResponse.body.asString())[0].fnrEllerOrgnr)
+    }
+
+    companion object {
+        @JvmStatic
+        @BeforeAll
+        fun init() {
+            embeddedServer(Netty, PORT) {
+                installCommonFeatures()
+                urEksternApi(false)
+            }.start()
+
+            RestAssured.baseURI = URL
+            RestAssured.basePath = ""
+            val port = PORT
+            RestAssured.port = port
+            RestAssured.config = RestAssuredConfig.config().objectMapperConfig(
+                ObjectMapperConfig().jackson2ObjectMapperFactory { _, _ -> jsonMapper }
+            )
+        }
+    }
+}

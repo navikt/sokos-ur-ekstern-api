@@ -21,7 +21,8 @@ val kotlinLoggingVersion = "3.0.5"
 val commonsCodecVersion = "1.15"
 val nimbusVersion = "9.37.3"
 val junitVersion = "5.10.1"
-val restEasyVersion = "6.2.7.Final"
+val restAssuredVersion = "5.4.0"
+val swaggerRequestValidatorVersion = "2.40.0"
 
 dependencies {
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
@@ -47,9 +48,11 @@ dependencies {
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
     implementation("io.github.microutils:kotlin-logging-jvm:$kotlinLoggingVersion")
 
+
     testImplementation("org.junit.jupiter:junit-jupiter:$junitVersion")
     testImplementation("org.jetbrains.kotlin:kotlin-test:$kotlinVersion")
-    testImplementation("org.jboss.resteasy:resteasy-client:$restEasyVersion")
+    testImplementation("io.rest-assured:rest-assured:$restAssuredVersion")
+    testImplementation("com.atlassian.oai:swagger-request-validator-restassured:$swaggerRequestValidatorVersion")
 }
 
 kotlin {
