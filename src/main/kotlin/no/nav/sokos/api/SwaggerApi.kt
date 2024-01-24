@@ -7,7 +7,7 @@ import io.ktor.server.routing.routing
 fun Application.swaggerApi() {
     routing {
         swaggerUI(
-            path = "/api/v1/docs/",
+            path = "/api/v1/docs",
             swaggerFile = "spec/ur-ekstern-api-v1-openapi-spec.yaml"
         )
     }

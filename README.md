@@ -1,7 +1,7 @@
 # Sokos-ur-ekstern-api
 
 # Test
-OpenApi er tilgjengelig på: https://sokos-ur-ekstern-api.intern.dev.nav.no/api/v1/docs/index.html  
+OpenApi er tilgjengelig på: https://sokos-ur-ekstern-api.intern.dev.nav.no/api/v1/docs
 
 Maskinporten token kan hentes ved å kjøre  MaskinportenAccessTokenClient fra devtools mappa.   
 Maskinporten miljøvariabler kan hentes ved å kjøre:
