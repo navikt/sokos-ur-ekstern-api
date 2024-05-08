@@ -2,7 +2,7 @@ group = "no.nav.sokos"
 version = "1.0-SNAPSHOT"
 
 plugins {
-    kotlin("jvm") version "1.9.21"
+    kotlin("jvm") version "1.9.24"
     id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
@@ -10,17 +10,17 @@ repositories {
     mavenCentral()
 }
 
-val kotlinVersion = "1.9.21"
-val ktorVersion = "2.3.7"
-val jacksonVersion = "2.16.1"
-val prometheusVersion = "1.12.2"
-val logbackVersion = "1.4.14"
+val kotlinVersion = "1.9.24"
+val ktorVersion = "2.3.10"
+val jacksonVersion = "2.17.1"
+val prometheusVersion = "1.12.5"
+val logbackVersion = "1.5.6"
 val logstashVersion = "7.4"
 val swaggerUiVersion = "4.18.2"
 val kotlinLoggingVersion = "3.0.5"
-val commonsCodecVersion = "1.15"
+val commonsCodecVersion = "1.17.0"
 val nimbusVersion = "9.37.3"
-val junitVersion = "5.10.1"
+val junitVersion = "5.10.2"
 val restAssuredVersion = "5.4.0"
 val swaggerRequestValidatorVersion = "2.40.0"
 
