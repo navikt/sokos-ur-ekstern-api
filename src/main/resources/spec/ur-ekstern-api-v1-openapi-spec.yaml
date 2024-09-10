@@ -74,7 +74,7 @@ components:
             type: string
             enum:
               - AAP
-              - PENSJON
+              - DAGPENGER
           description: |
             En liste med ytelsestyper som det skal søkes på.
         mottakere:
