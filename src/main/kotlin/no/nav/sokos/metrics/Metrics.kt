@@ -1,25 +1,20 @@
 package no.nav.sokos.metrics
 
-import io.micrometer.prometheus.PrometheusConfig
-import io.micrometer.prometheus.PrometheusMeterRegistry
-import io.prometheus.client.Counter
-
-private const val NAMESPACE = "sokos_ur_ekstern_api"
+import io.micrometer.prometheusmetrics.PrometheusConfig
+import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
 
 
 object Metrics {
     val prometheusRegistry = PrometheusMeterRegistry(PrometheusConfig.DEFAULT)
+        .apply { config().commonTags("team", "okonomi", "app", "sokos-ur-ekstern-api")}
 
-    val appStateRunningFalse: Counter = Counter.build()
-        .namespace(NAMESPACE)
-        .name("app_state_running_false")
-        .help("app state running changed to false")
-        .register(prometheusRegistry.prometheusRegistry)
+    val appStateRunningFalse: io.micrometer.core.instrument.Counter = io.micrometer.core.instrument.Counter.builder("app.state.running.false")
+        .description("App state running changed to false.")
+        .register(prometheusRegistry)
 
-    val appStateReadyFalse: Counter = Counter.build()
-        .namespace(NAMESPACE)
-        .name("app_state_ready_false")
-        .help("app state ready changed to false")
-        .register(prometheusRegistry.prometheusRegistry)
+    val appStateReadyFalse: io.micrometer.core.instrument.Counter = io.micrometer.core.instrument.Counter.builder("app.state.ready.false")
+        .description("App state ready changed to false.")
+        .register(prometheusRegistry)
+
 
 }

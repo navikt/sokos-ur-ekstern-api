@@ -5,9 +5,9 @@ import kotlin.properties.Delegates
 
 class ApplicationState {
     var ready: Boolean by Delegates.observable(false) { _, _, newValue ->
-        if (!newValue) Metrics.appStateReadyFalse.inc()
+        if (!newValue) Metrics.appStateReadyFalse.increment()
     }
     var running: Boolean by Delegates.observable(true) { _, _, newValue ->
-        if (!newValue) Metrics.appStateRunningFalse.inc()
+        if (!newValue) Metrics.appStateRunningFalse.increment()
     }
 }
