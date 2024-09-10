@@ -9,7 +9,8 @@ import io.restassured.config.ObjectMapperConfig
 import io.restassured.config.RestAssuredConfig
 import io.restassured.http.Header
 import no.nav.sokos.api.entitet.FinnYtelserRequest
-import no.nav.sokos.api.entitet.Utbetaling
+import no.nav.sokos.api.entitet.Mottaker
+import no.nav.sokos.api.entitet.Periode
 import no.nav.sokos.jsonMapper
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeAll
@@ -29,12 +30,16 @@ class EksternApiKtTest {
             .filter(validationFilter)
             .header(Header("Content-Type", "application/json"))
             .header(Header("x-correlation-id", "3"))
-            .body(FinnYtelserRequest(LocalDate.now(), LocalDate.now(), listOf("123")))
+            .body(FinnYtelserRequest(
+                periode = Periode(LocalDate.now(), LocalDate.now()),
+                ytelseskoder = listOf("AAP"),
+                mottakere = listOf("123")
+            ))
             .post("/ur-ekstern/api/v1/finn-ytelser")
 
         apiResponse.then().statusCode(200)
 
-        assertEquals("123", jsonMapper.readValue<List<Utbetaling>>(apiResponse.body.asString())[0].fnrEllerOrgnr)
+        assertEquals("123", jsonMapper.readValue<List<Mottaker>>(apiResponse.body.asString())[0].mottakerId)
     }
 
     companion object {

@@ -9,7 +9,11 @@ import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
 import mu.KotlinLogging
 import no.nav.sokos.api.entitet.FinnYtelserRequest
-import no.nav.sokos.api.entitet.Utbetaling
+import no.nav.sokos.api.entitet.Mottaker
+import no.nav.sokos.api.entitet.Periode
+import no.nav.sokos.api.entitet.Ytelse
+import java.math.BigDecimal
+import java.time.LocalDate
 
 
 private val logger = KotlinLogging.logger { }
@@ -23,7 +27,21 @@ fun Application.urEksternApi(
             route("ur-ekstern/api") {
                 post("v1/finn-ytelser") {
                     val req: FinnYtelserRequest = call.receive()
-                    call.respond(req.fnrEllerOrgnr.map { Utbetaling(it) })
+                    val response = req.mottakere.map {
+                        Mottaker(it, listOf(Ytelse(
+                            datoPostert = LocalDate.now(),
+                            datoValutert = LocalDate.now(),
+                            rettighetshaver = "rettighetshaver",
+                            ytelse = "AAP",
+                            ytelseBeskrivelse = "ytelseBeskrivelse",
+                            ytelsePeriode = Periode(
+                                fom = LocalDate.now(), tom = LocalDate.now()
+                            ),
+                            belop = BigDecimal.ONE,
+                            typeUtbetaling = "typeUtbetaling"
+                        )))
+                    }
+                    call.respond(response)
                 }
             }
         }

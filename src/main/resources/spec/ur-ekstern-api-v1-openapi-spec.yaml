@@ -34,10 +34,10 @@ paths:
             application/json:
               schema:
                 type: array
+                items:
+                  $ref: '#/components/schemas/Mottaker'
                 description: Liste over utbetalinger for den angitte id i den angitte
                   periode.
-                items:
-                  $ref: '#/components/schemas/Utbetaling'
         401:
           description: Uautorisert
           content:
@@ -62,8 +62,67 @@ paths:
 components:
   schemas:
     Ytelseoppslag:
-      required: [fnrEllerOrgnr, fom, tom]
+      required: [periode, mottakere, ytelseskoder]
       type: object
+      properties:
+        periode:
+          $ref: '#/components/schemas/Periode'
+        ytelseskoder:
+          type: array
+          minItems: 1
+          items:
+            type: string
+            enum:
+              - AAP
+              - PENSJON
+          description: |
+            En liste med ytelsestyper som det skal søkes på.
+        mottakere:
+          type: array
+          maxItems: 1000
+          items:
+            type: string
+          description: |
+            En liste med unike identer for mattaker av ytelser, f.eks fødselsnummer.
+    Mottaker:
+      type: object
+      description: Informasjon om en utbetaling som er gjort.
+      required: [mottakerId, ytelser]
+      properties:
+        mottakerId:
+          type: string
+        ytelser:
+          type: array
+          items:
+            $ref: '#/components/schemas/Ytelse'
+    Ytelse:
+      type: object
+      description: Informasjon om en utbetaling som er gjort.
+      properties:
+        datoPostert:
+          type: string
+          format: date
+        datoValutert:
+          type: string
+          format: date
+        rettighetshaver:
+          type: string
+        ytelse:
+          type: string
+        ytelseBeskrivelse:
+          type: string
+        ytelsePeriode:
+          $ref: '#/components/schemas/Periode'
+        belop:
+          type: number
+          format: doubble
+          example: 999.99
+        typeUtbetaling:
+          type: string
+    Periode:
+      type: object
+      description: En periode angir et tidsintervall med fra-og-med og til-og-med.
+      required: [fom, tom]
       properties:
         fom:
           type: string
@@ -73,20 +132,7 @@ components:
           type: string
           format: date
           description: Til og med dato
-        fnrEllerOrgnr:
-          type: array
-          items:
-            type: string
-          description: |
-            Unik id for identen det søkes utbetalinger for, enten fnr eller dnr.
-    Utbetaling:
-      type: object
-      description: Informasjon om en utbetaling som er gjort.
-      required:
-        - fnrEllerOrgnr
-      properties:
-        fnrEllerOrgnr:
-          type: string
+
   securitySchemes:
     bearerAuth:
       type: http
