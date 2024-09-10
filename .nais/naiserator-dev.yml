@@ -41,6 +41,8 @@ spec:
           consumers:
             - name: "NAV"
               orgno: "889640782"
+            - name: "Husbanken"
+              orgno: "942114184"
       consumes:
         - name: "nav:reskontro:ytelser.read"
   prometheus:
