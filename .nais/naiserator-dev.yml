@@ -47,4 +47,4 @@ spec:
     enabled: true
     path: /internal/metrics
   ingresses:
-    - https://sokos-ur-ekstern-api.intern.dev.nav.no
+    - https://sokos-ur-ekstern-api.ekstern.dev.nav.no

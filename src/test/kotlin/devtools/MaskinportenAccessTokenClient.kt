@@ -3,27 +3,30 @@ package devtools
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.fasterxml.jackson.annotation.JsonAlias
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.nimbusds.jose.jwk.RSAKey
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.accept
+import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.HttpMethod
 import io.ktor.http.contentType
-import no.nav.sokos.config.Configuration
+import kotlinx.coroutines.runBlocking
 import no.nav.sokos.defaultHttpClient
 import java.util.Date
 
 suspend fun main() {
-    val config = Configuration.MaskinportenClientConfig()
+    val config = MaskinportenClientConfig()
     val maskinportenClient = MaskinportenAccessTokenClient(config, defaultHttpClient)
     val token = maskinportenClient.hentAccessTokenFraProvider()
     println(token.accessToken)
 }
 
 class MaskinportenAccessTokenClient(
-    private val maskinportenConfig: Configuration.MaskinportenClientConfig,
+    private val maskinportenConfig: MaskinportenClientConfig,
     private val client: HttpClient,
 ) {
 
@@ -46,8 +49,34 @@ class MaskinportenAccessTokenClient(
     }
 }
 
+
+data class MaskinportenClientConfig(
+    val clientId: String = readProperty("MASKINPORTEN_CLIENT_ID", ""),
+    val authorityEndpoint: String = readProperty("MASKINPORTEN_WELL_KNOWN_URL", ""),
+    val rsaKey: RSAKey? = RSAKey.parse(readProperty("MASKINPORTEN_CLIENT_JWK", "")),
+    val scopes: String = readProperty("MASKINPORTEN_SCOPES", ""),
+) : JwtConfig(authorityEndpoint)
+
+data class OpenIdConfiguration(
+    @JsonProperty("jwks_uri") val jwksUri: String,
+    @JsonProperty("issuer") val issuer: String,
+    @JsonProperty("token_endpoint") val tokenEndpoint: String,
+)
+
+open class JwtConfig(wellKnownUrl: String) {
+    val openIdConfiguration: OpenIdConfiguration by lazy {
+        runBlocking { defaultHttpClient.get(wellKnownUrl).body() }
+    }
+}
+
 data class AccessToken(
     @JsonAlias("access_token")
     val accessToken: String
 )
 
+
+private fun readProperty(name: String, default: String? = null) =
+    System.getenv(name)
+        ?: System.getProperty(name)
+        ?: default.takeIf { it != null }
+        ?: throw RuntimeException("Mandatory property '$name' was not found")
