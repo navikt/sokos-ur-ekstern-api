@@ -1,6 +1,7 @@
 package no.nav.sokos.api
 
 import com.auth0.jwt.interfaces.Claim
+import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.call
@@ -24,13 +25,18 @@ fun Application.urEksternApi(
         authenticate(useAuthentication) {
             route("ur-ekstern/api") {
                 post("v1/finn-ytelser") {
-                    val orgnr = call.hentHjemmelshaver(useAuthentication) ?: "TEST" //TODO Default
-                    val correlationId = MDC.get("x-correlation-id")
-                    secureLogger.info { "$orgnr har gjort et kall" }
+                    try {
+                        val orgnr = call.hentHjemmelshaver(useAuthentication) ?: "TEST" //TODO Default
+                        val correlationId = MDC.get("x-correlation-id")
+                        secureLogger.info { "$orgnr har gjort et kall" }
 
-                    val request: FinnYtelserRequest = call.receive()
-                    val response = urClient.finnYtelser(orgnr, correlationId, request)
-                    call.respond(response)
+                        val request: FinnYtelserRequest = call.receive()
+                        val response = urClient.finnYtelser(orgnr, correlationId, request)
+                        call.respond(response)
+                    } catch (e: Exception) {
+                        secureLogger.error(e) { "Noe gikk galt" }
+                        call.respond(HttpStatusCode.InternalServerError, "noe gikk galt")
+                    }
                 }
             }
         }
