@@ -1,0 +1,215 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "description" : "",
+    "version" : "1.0.0",
+    "title" : "navuroppresv1api"
+  },
+  "host" : "localhost:8080",
+  "basePath" : "/navuroppresv1api",
+  "schemes" : [ "https", "http" ],
+  "consumes" : [ "application/json" ],
+  "produces" : [ "application/json" ],
+  "paths" : {
+    "/v1/finn-ytelser" : {
+      "post" : {
+        "tags" : [ "navuroppresv1api" ],
+        "operationId" : "postNavurOppResv1",
+        "parameters" : [ {
+          "name" : "Authorization",
+          "in" : "header",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "postNavurOppResv1_request",
+          "description" : "request body",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/postNavurOppResv1_request"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "$ref" : "#/definitions/postNavurOppResv1_response_200"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions" : {
+    "postNavurOppResv1_request" : {
+      "type" : "object",
+      "properties" : {
+        "navurOppResv1Operation" : {
+          "type" : "object",
+          "properties" : {
+            "Container1" : {
+              "type" : "object",
+              "properties" : {
+                "request" : {
+                  "type" : "object",
+                  "properties" : {
+                    "orgnr" : {
+                      "type" : "string",
+                      "maxLength" : 9
+                    },
+                    "correlationId" : {
+                      "type" : "string",
+                      "maxLength" : 36
+                    },
+                    "hjemmelshaver" : {
+                      "type" : "string",
+                      "maxLength" : 16
+                    },
+                    "datoPostertFom" : {
+                      "type" : "string",
+                      "maxLength" : 10
+                    },
+                    "datoPostertTom" : {
+                      "type" : "string",
+                      "maxLength" : 10
+                    },
+                    "ytelseTabell" : {
+                      "type" : "array",
+                      "items" : {
+                        "type" : "object",
+                        "properties" : {
+                          "ytelsesKode" : {
+                            "type" : "string",
+                            "maxLength" : 20
+                          }
+                        }
+                      },
+                      "maxItems" : 30,
+                      "minItems" : 0
+                    },
+                    "mottakerIdTabell" : {
+                      "type" : "array",
+                      "items" : {
+                        "type" : "object",
+                        "properties" : {
+                          "MottakerId" : {
+                            "type" : "string",
+                            "maxLength" : 11
+                          }
+                        }
+                      },
+                      "maxItems" : 1000,
+                      "minItems" : 0
+                    },
+                    "bruker" : {
+                      "type" : "string",
+                      "maxLength" : 50
+                    },
+                    "passord" : {
+                      "type" : "string",
+                      "maxLength" : 50
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "required" : [ "Container1" ]
+        }
+      }
+    },
+    "postNavurOppResv1_response_200" : {
+      "type" : "object",
+      "properties" : {
+        "navurOppResv1OperationResponse" : {
+          "type" : "object",
+          "properties" : {
+            "Container1" : {
+              "type" : "object",
+              "properties" : {
+                "response" : {
+                  "type" : "object",
+                  "properties" : {
+                    "correlationId" : {
+                      "type" : "string",
+                      "maxLength" : 36
+                    },
+                    "status" : {
+                      "type" : "string",
+                      "maxLength" : 2
+                    },
+                    "statusMelding" : {
+                      "type" : "string",
+                      "maxLength" : 75
+                    },
+                    "resultatTabell" : {
+                      "type" : "array",
+                      "items" : {
+                        "type" : "object",
+                        "properties" : {
+                          "mottakerId" : {
+                            "type" : "string",
+                            "maxLength" : 11
+                          },
+                          "datoPostert" : {
+                            "type" : "string",
+                            "maxLength" : 10
+                          },
+                          "datoValutert" : {
+                            "type" : "string",
+                            "maxLength" : 10
+                          },
+                          "rettighetshaver" : {
+                            "type" : "string",
+                            "maxLength" : 11
+                          },
+                          "ytelse" : {
+                            "type" : "string",
+                            "maxLength" : 20
+                          },
+                          "ytelseBeskrivelse" : {
+                            "type" : "string",
+                            "maxLength" : 45
+                          },
+                          "datoUtbetFom" : {
+                            "type" : "string",
+                            "maxLength" : 10
+                          },
+                          "datoUtbetTom" : {
+                            "type" : "string",
+                            "maxLength" : 10
+                          },
+                          "belop" : {
+                            "type" : "number",
+                            "format" : "decimal",
+                            "minimum" : -9999999999999.99,
+                            "maximum" : 9999999999999.99
+                          },
+                          "typeUtbetaling" : {
+                            "type" : "string",
+                            "maxLength" : 1
+                          },
+                          "konto" : {
+                            "type" : "string",
+                            "maxLength" : 7
+                          },
+                          "kontoBeskrivelse" : {
+                            "type" : "string",
+                            "maxLength" : 70
+                          }
+                        }
+                      },
+                      "maxItems" : 99999,
+                      "minItems" : 0
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "required" : [ "Container1" ]
+        }
+      }
+    }
+  }
+}

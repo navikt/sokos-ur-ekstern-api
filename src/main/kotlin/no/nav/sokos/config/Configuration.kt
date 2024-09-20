@@ -11,8 +11,15 @@ private val logger = KotlinLogging.logger { }
 data class Configuration(
     val appName: String = readProperty("NAIS_APP_NAME"),
     val useAuthentication: Boolean = readProperty("USE_AUTHENTICATION", default = "true") != "false",
-    val maskinportenServerConfig: MaskinportenServerConfig = MaskinportenServerConfig()
+    val maskinportenServerConfig: MaskinportenServerConfig = MaskinportenServerConfig(),
+    val urConfig: UrConfig = UrConfig()
 ) {
+    data class UrConfig(
+        val endpointUrl: String = readProperty("UR_ENDPOINT_URL", ""),
+        val username: String = readProperty("UR_USERNAME", ""),
+        val password: String = readProperty("UR_PASSWORD", "")
+
+    )
 
     data class MaskinportenServerConfig(
         val authorityEndpoint: String = readProperty("MASKINPORTEN_WELL_KNOWN_URL", ""),
@@ -26,8 +33,6 @@ data class Configuration(
                 .build()
         }
     }
-
-
 }
 
 private fun readProperty(name: String, default: String? = null) =

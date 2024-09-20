@@ -9,11 +9,13 @@ import no.nav.sokos.api.naisApi
 import no.nav.sokos.api.swaggerApi
 import no.nav.sokos.api.urEksternApi
 import no.nav.sokos.config.Configuration
+import no.nav.sokos.ur.UrClient
 import java.util.concurrent.TimeUnit
 
 class HttpServer(
     private val appState: ApplicationState,
     appConfig: Configuration,
+    urClient: UrClient,
     port: Int = 8080,
 ) {
 
@@ -28,7 +30,7 @@ class HttpServer(
         installCommonFeatures()
         installSecurity(appConfig)
         naisApi({ appState.ready }, { appState.running })
-        urEksternApi(appConfig.useAuthentication)
+        urEksternApi(appConfig.useAuthentication, urClient)
         swaggerApi()
     }
 

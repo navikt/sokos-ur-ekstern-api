@@ -31,6 +31,12 @@ spec:
     initialDelay: 10
     periodSeconds: 5
     timeout: 5
+  accessPolicy:
+    outbound:
+      external:
+        - ipv4: 155.55.1.82  # UR via zos-connect
+          ports:
+            - port: 9080
   maskinporten:
     enabled: true
     scopes:
@@ -50,3 +56,8 @@ spec:
     path: /internal/metrics
   ingresses:
     - https://sokos-ur-ekstern-api.ekstern.dev.nav.no
+  envFrom:
+    - secret: sokos-ur-ekstern-api-secrets
+  env:
+    - name: UR_ENDPOINT_URL
+      value: "https://155.55.1.82:9080"

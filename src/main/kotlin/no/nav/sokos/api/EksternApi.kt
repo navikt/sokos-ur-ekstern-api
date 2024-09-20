@@ -12,39 +12,24 @@ import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
 import no.nav.sokos.api.entitet.FinnYtelserRequest
-import no.nav.sokos.api.entitet.Mottaker
-import no.nav.sokos.api.entitet.Periode
-import no.nav.sokos.api.entitet.Ytelse
 import no.nav.sokos.secureLogger
-import java.math.BigDecimal
-import java.time.LocalDate
+import no.nav.sokos.ur.UrClient
+import org.slf4j.MDC
 
 fun Application.urEksternApi(
-    useAuthentication: Boolean = true
+    useAuthentication: Boolean = true,
+    urClient: UrClient
 ) {
-
     routing {
         authenticate(useAuthentication) {
             route("ur-ekstern/api") {
                 post("v1/finn-ytelser") {
-                    val hjemmelshaver = call.hentHjemmelshaver(useAuthentication)
-                    secureLogger.info { "$hjemmelshaver har gjort et kall" }
+                    val orgnr = call.hentHjemmelshaver(useAuthentication) ?: "TEST" //TODO Default
+                    val correlationId = MDC.get("x-correlation-id")
+                    secureLogger.info { "$orgnr har gjort et kall" }
 
-                    val req: FinnYtelserRequest = call.receive()
-                    val response = req.mottakere.map {
-                        Mottaker(it, listOf(Ytelse(
-                            datoPostert = LocalDate.now(),
-                            datoValutert = LocalDate.now(),
-                            rettighetshaver = "rettighetshaver",
-                            ytelse = "AAP",
-                            ytelseBeskrivelse = "ytelseBeskrivelse",
-                            ytelsePeriode = Periode(
-                                fom = LocalDate.now(), tom = LocalDate.now()
-                            ),
-                            belop = BigDecimal.ONE,
-                            typeUtbetaling = "typeUtbetaling"
-                        )))
-                    }
+                    val request: FinnYtelserRequest = call.receive()
+                    val response = urClient.finnYtelser(orgnr, correlationId, request)
                     call.respond(response)
                 }
             }
