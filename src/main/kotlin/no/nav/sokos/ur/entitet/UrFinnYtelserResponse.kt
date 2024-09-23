@@ -26,13 +26,13 @@ data class FinnYtelserResponseData (
 
 data class UrYtelse (
     val mottakerId: String,
-    val datoPostert: LocalDate,
-    val datoValutert: LocalDate,
+    val datoPostert: LocalDate?,
+    val datoValutert: LocalDate?,
     val rettighetshaver: String,
     val ytelse: String,
     val ytelseBeskrivelse: String,
-    val datoUtbetFom: LocalDate,
-    val datoUtbetTom: LocalDate,
+    val datoUtbetFom: LocalDate?,
+    val datoUtbetTom: LocalDate?,
     val belop: BigDecimal,
     val typeUtbetaling: String,
     val konto: String,

@@ -4,8 +4,8 @@ import java.math.BigDecimal
 import java.time.LocalDate
 
 class Ytelse(
-    val datoPostert: LocalDate,
-    val datoValutert: LocalDate,
+    val datoPostert: LocalDate?,
+    val datoValutert: LocalDate?,
     val rettighetshaver: String,
     val ytelse: String,
     val ytelseBeskrivelse: String,
