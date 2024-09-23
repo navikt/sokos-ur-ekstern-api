@@ -8,7 +8,7 @@ data class UrFinnYtelserResponse (
 )
 
 data class FinnYtelserResponseOperation (
-    val container1: FinnYtelserResponseContainer
+    val MHA1RESPONSE: FinnYtelserResponseContainer
 )
 
 data class FinnYtelserResponseContainer (

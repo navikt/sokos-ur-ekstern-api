@@ -7,11 +7,13 @@ import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.http.isSuccess
+import mu.KotlinLogging
 import no.nav.sokos.api.entitet.FinnYtelserRequest
 import no.nav.sokos.api.entitet.Mottaker
 import no.nav.sokos.api.entitet.Periode
 import no.nav.sokos.api.entitet.Ytelse
 import no.nav.sokos.config.Configuration
+import no.nav.sokos.secureLogger
 import no.nav.sokos.ur.entitet.FinnYtelser
 import no.nav.sokos.ur.entitet.FinnYtelserRequestContainer
 import no.nav.sokos.ur.entitet.FinnYtelserRequestOperation
@@ -25,6 +27,8 @@ class UrClient(
     private val urConfig: Configuration.UrConfig,
     private val client: HttpClient = urHttpClient(urConfig)
 ) {
+    private val logger = KotlinLogging.logger { }
+
     private val hentYtelserPath = "/navuroppresv1api/v1/finn-ytelser"
 
     suspend fun finnYtelser(orgnr: String, correlationId: String, request: FinnYtelserRequest): List<Mottaker> {
@@ -51,9 +55,12 @@ class UrClient(
             setBody(urRequest)
         }
 
+        logger.info { response }
+
         if (response.status.isSuccess()) {
             val body = response.body<UrFinnYtelserResponse>()
-            val responseData = body.navurOppResv1OperationResponse.container1.response
+            logger.info { body }
+            val responseData = body.navurOppResv1OperationResponse.MHA1RESPONSE.response
             if (responseData.status.uppercase() == "OK") {
                 return responseData.resultatTabell.groupBy({it.mottakerId}) {
                     Ytelse(
