@@ -1,5 +1,6 @@
 package no.nav.sokos.ur.entitet
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import java.time.LocalDate
 
 data class UrFinnYtelserRequest (
@@ -7,6 +8,7 @@ data class UrFinnYtelserRequest (
 )
 
 data class FinnYtelserRequestOperation (
+    @field:JsonProperty("MHA1REQUEST")
     val MHA1REQUEST: FinnYtelserRequestContainer
 )
 

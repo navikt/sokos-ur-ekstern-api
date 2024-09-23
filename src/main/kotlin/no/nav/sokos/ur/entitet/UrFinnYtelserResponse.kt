@@ -1,5 +1,6 @@
 package no.nav.sokos.ur.entitet
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import java.math.BigDecimal
 import java.time.LocalDate
 
@@ -8,6 +9,7 @@ data class UrFinnYtelserResponse (
 )
 
 data class FinnYtelserResponseOperation (
+    @field:JsonProperty("MHA1RESPONSE")
     val MHA1RESPONSE: FinnYtelserResponseContainer
 )
 
