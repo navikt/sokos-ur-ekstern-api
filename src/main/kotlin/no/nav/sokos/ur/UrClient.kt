@@ -49,7 +49,7 @@ class UrClient(
             )
         )
 
-        secureLogger.info { "Request: $request" }
+        secureLogger.info { "Request: $urRequest" }
 
         val response = client.post(urConfig.endpointUrl + hentYtelserPath) {
             contentType(ContentType.Application.Json)
