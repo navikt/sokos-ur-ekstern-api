@@ -7,7 +7,7 @@ data class UrFinnYtelserRequest (
 )
 
 data class FinnYtelserRequestOperation (
-    val container1: FinnYtelserRequestContainer
+    val MHA1REQUEST: FinnYtelserRequestContainer
 )
 
 data class FinnYtelserRequestContainer (
