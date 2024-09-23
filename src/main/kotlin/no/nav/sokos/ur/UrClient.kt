@@ -4,6 +4,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.http.isSuccess
@@ -27,8 +28,6 @@ class UrClient(
     private val urConfig: Configuration.UrConfig,
     private val client: HttpClient = urHttpClient(urConfig)
 ) {
-    private val logger = KotlinLogging.logger { }
-
     private val hentYtelserPath = "/navuroppresv1api/v1/finn-ytelser"
 
     suspend fun finnYtelser(orgnr: String, correlationId: String, request: FinnYtelserRequest): List<Mottaker> {
@@ -50,16 +49,18 @@ class UrClient(
             )
         )
 
+        secureLogger.info { "Request: $request" }
+
         val response = client.post(urConfig.endpointUrl + hentYtelserPath) {
             contentType(ContentType.Application.Json)
             setBody(urRequest)
         }
 
-        logger.info { response }
+        secureLogger.info("Response: ${response.bodyAsText()}")
 
         if (response.status.isSuccess()) {
             val body = response.body<UrFinnYtelserResponse>()
-            logger.info { body }
+            secureLogger.info { body }
             val responseData = body.navurOppResv1OperationResponse.MHA1RESPONSE.response
             if (responseData.status.uppercase() == "OK") {
                 return responseData.resultatTabell.groupBy({it.mottakerId}) {
