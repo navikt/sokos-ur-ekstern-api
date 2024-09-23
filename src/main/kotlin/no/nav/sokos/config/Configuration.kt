@@ -17,8 +17,9 @@ data class Configuration(
     data class UrConfig(
         val endpointUrl: String = readProperty("UR_ENDPOINT_URL", ""),
         val username: String = readProperty("UR_USERNAME", ""),
-        val password: String = readProperty("UR_PASSWORD", "")
-
+        val password: String = readProperty("UR_PASSWORD", ""),
+        val trustStore: String = readProperty("NAV_TRUSTSTORE_PATH", ""),
+        val trustStorePassword: String = readProperty("NAV_TRUSTSTORE_PASSWORD", ""),
     )
 
     data class MaskinportenServerConfig(

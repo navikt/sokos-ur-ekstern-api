@@ -12,7 +12,6 @@ import no.nav.sokos.api.entitet.Mottaker
 import no.nav.sokos.api.entitet.Periode
 import no.nav.sokos.api.entitet.Ytelse
 import no.nav.sokos.config.Configuration
-import no.nav.sokos.defaultHttpClient
 import no.nav.sokos.ur.entitet.FinnYtelser
 import no.nav.sokos.ur.entitet.FinnYtelserRequestContainer
 import no.nav.sokos.ur.entitet.FinnYtelserRequestOperation
@@ -22,10 +21,9 @@ import no.nav.sokos.ur.entitet.UrFinnYtelserResponse
 import no.nav.sokos.ur.entitet.YtelseTabell
 
 
-
 class UrClient(
     private val urConfig: Configuration.UrConfig,
-    private val client: HttpClient = defaultHttpClient
+    private val client: HttpClient = urHttpClient(urConfig)
 ) {
     private val hentYtelserPath = "/navuroppresv1api/v1/finn-ytelser"
 
@@ -72,7 +70,5 @@ class UrClient(
             }
         }
         throw Exception("Feil fra stormaskin")
-
     }
-
 }
