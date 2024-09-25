@@ -4,7 +4,7 @@ import mu.KotlinLogging
 import no.nav.sokos.config.Configuration
 import no.nav.sokos.ur.UrClient
 
-val secureLogger = KotlinLogging.logger { "secureLogger"}
+val secureLogger = KotlinLogging.logger( "secureLogger")
 
 fun main() {
     val appState = ApplicationState()
