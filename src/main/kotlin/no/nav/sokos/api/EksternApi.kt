@@ -31,8 +31,11 @@ fun Application.urEksternApi(
                         secureLogger.info { "$orgnr har gjort et kall" }
 
                         val request: FinnYtelserRequest = call.receive()
-                        val response = urClient.finnYtelser(orgnr, correlationId, request)
-                        call.respond(response)
+                        if (request.mottakere.size > 1000) {
+                            call.respond(HttpStatusCode.BadRequest, "Maks antall mottakere i en request er 1000.")
+                        } else {
+                            call.respond(urClient.finnYtelser(orgnr, correlationId, request))
+                        }
                     } catch (e: Exception) {
                         secureLogger.error(e) { "Noe gikk galt" }
                         call.respond(HttpStatusCode.InternalServerError, "noe gikk galt")

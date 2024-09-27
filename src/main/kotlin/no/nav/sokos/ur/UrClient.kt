@@ -38,9 +38,9 @@ class UrClient(
                         orgnr = orgnr,
                         correlationId = correlationId,
                         hjemmelshaver = "husbanKEN",
-                        datoPostertFom = request.periode.fom!!,
-                        datoPostertTom = request.periode.tom!!,
-                        ytelseTabell = request.ytelseskoder.map { YtelseTabell(ytelsesKode = it) },
+                        datoPostertFom = request.periode.fom,
+                        datoPostertTom = request.periode.tom,
+                        ytelseTabell = request.ytelseskoder?.map { YtelseTabell(ytelsesKode = it) } ?: emptyList(),
                         mottakerIdTabell = request.mottakere.map { MottakerIdTabell(mottakerId = it) },
                         bruker = urConfig.username,
                         passord = urConfig.password
@@ -63,18 +63,20 @@ class UrClient(
             secureLogger.info { body }
             val responseData = body.navurOppResv1OperationResponse.MHA1RESPONSE.response
             if (responseData.status.uppercase() == "OK") {
-                return responseData.resultatTabell.groupBy({it.mottakerId}) {
-                    Ytelse(
-                        datoValutert = it.datoValutert,
-                        datoPostert = it.datoPostert,
-                        rettighetshaver = it.rettighetshaver,
-                        ytelse = it.ytelse,
-                        ytelseBeskrivelse = it.ytelseBeskrivelse,
-                        belop = it.belop,
-                        ytelsePeriode = Periode(it.datoUtbetFom, it.datoUtbetTom),
-                        typeUtbetaling = it.typeUtbetaling
-                    )
-                }.map { (k, v) -> Mottaker(k, v) }
+                return responseData.resultatTabell.groupBy({it.mottakerId}) { urYtelse ->
+                    if (urYtelse.ytelse.isNotBlank()) {
+                        Ytelse(
+                            datoValutert = urYtelse.datoValutert!!,
+                            datoPostert = urYtelse.datoPostert!!,
+                            rettighetshaver = urYtelse.rettighetshaver,
+                            ytelse = urYtelse.ytelse,
+                            ytelseBeskrivelse = urYtelse.ytelseBeskrivelse,
+                            belop = urYtelse.belop,
+                            ytelsePeriode = Periode(urYtelse.datoUtbetFom!!, urYtelse.datoUtbetTom!!),
+                            typeUtbetaling = urYtelse.typeUtbetaling.takeIf { it.isNotBlank() }
+                        )
+                    } else null
+                }.map { (k, v) -> Mottaker(k, v.filterNotNull()) }
             }
         }
         throw Exception("Feil fra stormaskin")

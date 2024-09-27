@@ -62,7 +62,7 @@ paths:
 components:
   schemas:
     Ytelseoppslag:
-      required: [periode, mottakere, ytelseskoder]
+      required: [periode, mottakere]
       type: object
       properties:
         periode:
@@ -76,7 +76,7 @@ components:
               - AAP
               - DAGPENGER
           description: |
-            En liste med ytelsestyper som det skal søkes på.
+            En liste med ytelsestyper som det skal søkes på. Dersom ingen er vedlagt får man alle man har tilgang på.
         mottakere:
           type: array
           maxItems: 1000
@@ -98,6 +98,14 @@ components:
     Ytelse:
       type: object
       description: Informasjon om en utbetaling som er gjort.
+      required:
+        - datoPostert
+        - datoValutert
+        - rettighetshaver
+        - ytelse
+        - ytelseBeskrivelse
+        - ytelsePeriode
+        - belop
       properties:
         datoPostert:
           type: string
