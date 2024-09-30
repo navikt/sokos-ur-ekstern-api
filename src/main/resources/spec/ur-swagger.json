@@ -47,7 +47,7 @@
         "navurOppResv1Operation" : {
           "type" : "object",
           "properties" : {
-            "Container1" : {
+            "MHA1REQUEST" : {
               "type" : "object",
               "properties" : {
                 "request" : {
@@ -65,13 +65,13 @@
                       "type" : "string",
                       "maxLength" : 16
                     },
-                    "datoPostertFom" : {
+                    "bruker" : {
                       "type" : "string",
-                      "maxLength" : 10
+                      "maxLength" : 50
                     },
-                    "datoPostertTom" : {
+                    "passord" : {
                       "type" : "string",
-                      "maxLength" : 10
+                      "maxLength" : 50
                     },
                     "ytelseTabell" : {
                       "type" : "array",
@@ -85,36 +85,36 @@
                         }
                       },
                       "maxItems" : 30,
-                      "minItems" : 0
+                      "minItems" : 1
+                    },
+                    "datoPostertFom" : {
+                      "type" : "string",
+                      "maxLength" : 10
+                    },
+                    "datoPostertTom" : {
+                      "type" : "string",
+                      "maxLength" : 10
                     },
                     "mottakerIdTabell" : {
                       "type" : "array",
                       "items" : {
                         "type" : "object",
                         "properties" : {
-                          "MottakerId" : {
+                          "mottakerId" : {
                             "type" : "string",
                             "maxLength" : 11
                           }
                         }
                       },
                       "maxItems" : 1000,
-                      "minItems" : 0
-                    },
-                    "bruker" : {
-                      "type" : "string",
-                      "maxLength" : 50
-                    },
-                    "passord" : {
-                      "type" : "string",
-                      "maxLength" : 50
+                      "minItems" : 1
                     }
                   }
                 }
               }
             }
           },
-          "required" : [ "Container1" ]
+          "required" : [ "MHA1REQUEST" ]
         }
       }
     },
@@ -124,7 +124,7 @@
         "navurOppResv1OperationResponse" : {
           "type" : "object",
           "properties" : {
-            "Container1" : {
+            "MHA1RESPONSE" : {
               "type" : "object",
               "properties" : {
                 "response" : {
@@ -207,7 +207,7 @@
               }
             }
           },
-          "required" : [ "Container1" ]
+          "required" : [ "MHA1RESPONSE" ]
         }
       }
     }

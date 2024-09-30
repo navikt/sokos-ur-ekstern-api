@@ -12,14 +12,13 @@ import no.nav.sokos.api.entitet.FinnYtelserRequest
 import no.nav.sokos.api.entitet.Mottaker
 import no.nav.sokos.api.entitet.Periode
 import no.nav.sokos.config.Configuration
-import no.nav.sokos.defaultHttpClient
 import no.nav.sokos.jsonMapper
 import no.nav.sokos.ur.UrClient
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
+import setupMockHttpClient
 import java.time.LocalDate
-import kotlin.test.Ignore
 
 private const val PORT = 21212
 private const val URL = "http://localhost"
@@ -28,8 +27,8 @@ class EksternApiKtTest {
 
     private val validationFilter = OpenApiValidationFilter("spec/ur-ekstern-api-v1-openapi-spec.yaml")
 
-    @Test @Ignore
-    fun urEksternApi() {
+    @Test
+    fun urEksternApiHarData() {
         val apiResponse = RestAssured.given()
             .filter(validationFilter)
             .header(Header("Content-Type", "application/json"))
@@ -46,13 +45,31 @@ class EksternApiKtTest {
         assertEquals("123", jsonMapper.readValue<List<Mottaker>>(apiResponse.body.asString())[0].mottakerId)
     }
 
+    @Test
+    fun urEksternApiManglerData() {
+        val apiResponse = RestAssured.given()
+            .filter(validationFilter)
+            .header(Header("Content-Type", "application/json"))
+            .header(Header("x-correlation-id", "3"))
+            .body(FinnYtelserRequest(
+                periode = Periode(LocalDate.now(), LocalDate.now()),
+                ytelseskoder = listOf("AAP"),
+                mottakere = listOf("MANGLER")
+            ))
+            .post("/ur-ekstern/api/v1/finn-ytelser")
+
+        apiResponse.then().statusCode(200)
+
+        assertEquals("123", jsonMapper.readValue<List<Mottaker>>(apiResponse.body.asString())[0].mottakerId)
+    }
+
     companion object {
         @JvmStatic
         @BeforeAll
         fun init() {
             embeddedServer(Netty, PORT) {
                 installCommonFeatures()
-                urEksternApi(false, UrClient(Configuration.UrConfig(), defaultHttpClient))
+                urEksternApi(false, UrClient(Configuration.UrConfig(), setupMockHttpClient()))
             }.start()
 
             RestAssured.baseURI = URL

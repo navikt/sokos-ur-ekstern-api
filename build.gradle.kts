@@ -49,7 +49,7 @@ dependencies {
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
     implementation("io.github.microutils:kotlin-logging-jvm:$kotlinLoggingVersion")
 
-
+    testImplementation("io.ktor:ktor-client-mock:$ktorVersion")
     testImplementation("org.junit.jupiter:junit-jupiter:$junitVersion")
     testImplementation("org.jetbrains.kotlin:kotlin-test:$kotlinVersion")
     testImplementation("io.rest-assured:rest-assured:$restAssuredVersion")
