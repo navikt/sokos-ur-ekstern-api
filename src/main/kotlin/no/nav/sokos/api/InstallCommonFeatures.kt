@@ -68,7 +68,7 @@ fun Application.installCommonFeatures() {
             ProcessorMetrics()
         )
         timers { call, _ ->
-            secureLogger.info { "Modifiserer ktor timer" }
+            secureLogger.info { "Modifiserer ktor timer for path ${call.request.path()}" }
             if (call.request.path().startsWith("/ur-ekstern/api/v1/finn-ytelser")) {
                 secureLogger.info { "I if statement" }
                 call.hentHjemmelshaver()?.let {
