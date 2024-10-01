@@ -46,7 +46,7 @@ fun Application.urEksternApi(
     }
 }
 
-private fun ApplicationCall.hentHjemmelshaver(useAuthentication: Boolean): String? {
+fun ApplicationCall.hentHjemmelshaver(useAuthentication: Boolean = true): String? {
     if(useAuthentication){
         val consumer: Claim? = this.authentication.principal<JWTPrincipal>()!!.payload.claims["consumer"]
         val consumerId = consumer?.asMap()?.get("ID")?.toString()?.split(":")?.last()

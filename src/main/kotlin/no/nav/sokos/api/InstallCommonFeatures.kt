@@ -13,19 +13,23 @@ import io.ktor.server.plugins.callid.CallId
 import io.ktor.server.plugins.callid.callIdMdc
 import io.ktor.server.plugins.callloging.CallLogging
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.server.plugins.doublereceive.DoubleReceive
 import io.ktor.server.request.path
+import io.ktor.server.request.receive
 import io.micrometer.core.instrument.binder.jvm.JvmGcMetrics
 import io.micrometer.core.instrument.binder.jvm.JvmMemoryMetrics
 import io.micrometer.core.instrument.binder.jvm.JvmThreadMetrics
 import io.micrometer.core.instrument.binder.system.ProcessorMetrics
 import io.micrometer.core.instrument.binder.system.UptimeMetrics
+import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
+import no.nav.sokos.api.entitet.FinnYtelserRequest
 import no.nav.sokos.metrics.Metrics
 import org.slf4j.event.Level
 import java.util.UUID
 
 
-fun Application.installCommonFeatures(){
+fun Application.installCommonFeatures() {
     install(CallId) {
         header("nav-call-id")
         generate { UUID.randomUUID().toString() }
@@ -37,9 +41,9 @@ fun Application.installCommonFeatures(){
         callIdMdc("x-correlation-id")
         disableDefaultColors()
         filter { call ->
-                !call.request.path().contains("/docs")
-                        && !call.request.path().contains("/internal")
-                        && !call.request.path().contains("/metrics")
+            !call.request.path().contains("/docs")
+                    && !call.request.path().contains("/internal")
+                    && !call.request.path().contains("/metrics")
         }
     }
     install(ContentNegotiation) {
@@ -52,6 +56,7 @@ fun Application.installCommonFeatures(){
             enable(SerializationFeature.INDENT_OUTPUT)
         }
     }
+    install(DoubleReceive)
     install(MicrometerMetrics) {
         registry = Metrics.prometheusRegistry
         meterBinders = listOf(
@@ -61,5 +66,17 @@ fun Application.installCommonFeatures(){
             JvmThreadMetrics(),
             ProcessorMetrics()
         )
+        timers { call, _ ->
+            if (call.request.path().startsWith("/ur-ekstern/api/v1/finn-ytelser")) {
+                call.hentHjemmelshaver()?.let { tag("orgnr", it) } ?: tag("orgnr", "n/a")
+                runBlocking {
+                    runCatching {
+                        call.receive<FinnYtelserRequest>().ytelseskoder?.forEach {
+                            tag("ytelsestype", it)
+                        }
+                    }
+                }
+            }
+        }
     }
 }
