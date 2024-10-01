@@ -25,6 +25,7 @@ import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import no.nav.sokos.api.entitet.FinnYtelserRequest
 import no.nav.sokos.metrics.Metrics
+import no.nav.sokos.secureLogger
 import org.slf4j.event.Level
 import java.util.UUID
 
@@ -67,16 +68,23 @@ fun Application.installCommonFeatures() {
             ProcessorMetrics()
         )
         timers { call, _ ->
+            secureLogger.info { "Modifiserer ktor timer" }
             if (call.request.path().startsWith("/ur-ekstern/api/v1/finn-ytelser")) {
-                call.hentHjemmelshaver()?.let { tag("orgnr", it) } ?: tag("orgnr", "n/a")
+                secureLogger.info { "I if statement" }
+                call.hentHjemmelshaver()?.let {
+                    secureLogger.info { "Vi har et orgnr $it" }
+                    tag("orgnr", it) } ?: tag("orgnr", "n/a")
                 runBlocking {
                     runCatching {
                         call.receive<FinnYtelserRequest>().ytelseskoder?.forEach {
+                            secureLogger.info { "Vi har ytelsestype: $it" }
                             tag("ytelsestype", it)
                         }
                     }
                 }
+
             }
+            secureLogger.info { "All done." }
         }
     }
 }
