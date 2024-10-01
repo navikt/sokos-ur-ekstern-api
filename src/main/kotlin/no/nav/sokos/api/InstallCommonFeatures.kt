@@ -15,17 +15,13 @@ import io.ktor.server.plugins.callloging.CallLogging
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.doublereceive.DoubleReceive
 import io.ktor.server.request.path
-import io.ktor.server.request.receive
 import io.micrometer.core.instrument.binder.jvm.JvmGcMetrics
 import io.micrometer.core.instrument.binder.jvm.JvmMemoryMetrics
 import io.micrometer.core.instrument.binder.jvm.JvmThreadMetrics
 import io.micrometer.core.instrument.binder.system.ProcessorMetrics
 import io.micrometer.core.instrument.binder.system.UptimeMetrics
-import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
-import no.nav.sokos.api.entitet.FinnYtelserRequest
 import no.nav.sokos.metrics.Metrics
-import no.nav.sokos.secureLogger
 import org.slf4j.event.Level
 import java.util.UUID
 
@@ -67,24 +63,5 @@ fun Application.installCommonFeatures() {
             JvmThreadMetrics(),
             ProcessorMetrics()
         )
-        timers { call, _ ->
-            secureLogger.info { "Modifiserer ktor timer for path ${call.request.path()}" }
-            if (call.request.path().startsWith("/ur-ekstern/api/v1/finn-ytelser")) {
-                secureLogger.info { "I if statement" }
-                call.hentHjemmelshaver()?.let {
-                    secureLogger.info { "Vi har et orgnr $it" }
-                    tag("orgnr", it) } ?: tag("orgnr", "n/a")
-                runBlocking {
-                    runCatching {
-                        call.receive<FinnYtelserRequest>().ytelseskoder?.forEach {
-                            secureLogger.info { "Vi har ytelsestype: $it" }
-                            tag("ytelsestype", it)
-                        }
-                    }
-                }
-
-            }
-            secureLogger.info { "All done." }
-        }
     }
 }
