@@ -64,11 +64,17 @@ fun Application.installCommonFeatures() {
             JvmThreadMetrics(),
             ProcessorMetrics()
         )
-        timers { call, _ ->
-            if (call.request.path().startsWith("/ur-ekstern/api/v1/finn-ytelser")) {
-                call.hentHjemmelshaver()?.let {
-                    secureLogger.info { "Kall til finn-ytelser fra orgnr $it" }
-                    tag("orgnr", it) } ?: tag("orgnr", "n/a")
+        timers { call, ex ->
+            ex?.let { secureLogger.info(ex) { "Timer exception: ${ex.message}" } }
+            try {
+                if (call.request.path().startsWith("/ur-ekstern/api/v1/finn-ytelser")) {
+                    call.hentHjemmelshaver()?.let {
+                        secureLogger.info { "Kall til finn-ytelser fra orgnr $it" }
+                        tag("orgnr", it)
+                    } ?: tag("orgnr", "n/a")
+                }
+            } catch (e: Exception) {
+                secureLogger.error(e) { "WHAT THE" }
             }
         }
     }
