@@ -73,8 +73,10 @@ fun Application.installCommonFeatures() {
                         call.receive<FinnYtelserRequest>().ytelseskoder?.forEach {
                             tag("ytelsestype", it)
                         }
-                    }
+                    }.onFailure { tag("ytelsestype", "INGEN") }
                 }
+            } else {
+                tag("ytelsestype", "N/A")
             }
         }
     }
