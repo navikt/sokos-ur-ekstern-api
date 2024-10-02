@@ -16,4 +16,12 @@ object Metrics {
     val appStateReadyFalse: Counter = Counter.builder("app.state.ready.false")
         .description("App state ready changed to false.")
         .register(prometheusRegistry)
+
+    val ytelsestypeCounter: (orgnr: String, ytelsestype: String) -> Counter = { orgnr, ytelsestype ->
+        Counter.builder("api.finnytelse.ytelsestype")
+            .tag("orgnr", orgnr)
+            .tag("ytelsestype", ytelsestype)
+            .description("Ytelsestype som orgnummer søker.")
+            .register(prometheusRegistry)
+    }
 }

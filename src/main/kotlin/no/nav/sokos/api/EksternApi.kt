@@ -13,6 +13,7 @@ import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
 import no.nav.sokos.api.entitet.FinnYtelserRequest
+import no.nav.sokos.metrics.Metrics
 import no.nav.sokos.secureLogger
 import no.nav.sokos.ur.UrClient
 import org.slf4j.MDC
@@ -26,7 +27,7 @@ fun Application.urEksternApi(
             route("ur-ekstern/api") {
                 post("v1/finn-ytelser") {
                     try {
-                        val orgnr = call.hentHjemmelshaver(useAuthentication) ?: "TEST" //TODO Default
+                        val orgnr = call.hentHjemmelshaver(useAuthentication)
                         val correlationId = MDC.get("x-correlation-id")
                         secureLogger.info { "$orgnr har gjort et kall" }
 
@@ -34,6 +35,7 @@ fun Application.urEksternApi(
                         if (request.mottakere.size > 1000) {
                             call.respond(HttpStatusCode.BadRequest, "Maks antall mottakere i en request er 1000.")
                         } else {
+                            (request.ytelseskoder ?: listOf("ALLE")).forEach { Metrics.ytelsestypeCounter(orgnr, it) }
                             call.respond(urClient.finnYtelser(orgnr, correlationId, request))
                         }
                     } catch (e: Exception) {
@@ -46,10 +48,10 @@ fun Application.urEksternApi(
     }
 }
 
-fun ApplicationCall.hentHjemmelshaver(useAuthentication: Boolean = true): String? {
-    if(useAuthentication){
+fun ApplicationCall.hentHjemmelshaver(useAuthentication: Boolean = true): String {
+    if (useAuthentication) {
         val consumer: Claim? = this.authentication.principal<JWTPrincipal>()!!.payload.claims["consumer"]
         val consumerId = consumer?.asMap()?.get("ID")?.toString()?.split(":")?.last()
-        return consumerId
-    } else return null
+        return consumerId!!
+    } else return "TEST"
 }

@@ -15,15 +15,12 @@ import io.ktor.server.plugins.callloging.CallLogging
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.doublereceive.DoubleReceive
 import io.ktor.server.request.path
-import io.ktor.server.request.receive
 import io.micrometer.core.instrument.binder.jvm.JvmGcMetrics
 import io.micrometer.core.instrument.binder.jvm.JvmMemoryMetrics
 import io.micrometer.core.instrument.binder.jvm.JvmThreadMetrics
 import io.micrometer.core.instrument.binder.system.ProcessorMetrics
 import io.micrometer.core.instrument.binder.system.UptimeMetrics
-import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
-import no.nav.sokos.api.entitet.FinnYtelserRequest
 import no.nav.sokos.metrics.Metrics
 import org.slf4j.event.Level
 import java.util.UUID
@@ -68,16 +65,8 @@ fun Application.installCommonFeatures() {
         )
         timers { call, _ ->
             if (call.request.path().startsWith("/ur-ekstern/api/v1/finn-ytelser")) {
-                runBlocking {
-                    runCatching {
-                        call.receive<FinnYtelserRequest>().ytelseskoder?.forEach {
-                            tag("ytelsestype", it)
-                        }
-                    }.onFailure { tag("ytelsestype", "INGEN") }
-                }
-            } else {
-                tag("ytelsestype", "N/A")
-            }
+                tag("orgnr", call.hentHjemmelshaver())
+            } else tag("orgnr", "n/a")
         }
     }
 }
