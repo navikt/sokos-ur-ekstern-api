@@ -35,7 +35,7 @@ fun Application.urEksternApi(
                         if (request.mottakere.size > 1000) {
                             call.respond(HttpStatusCode.BadRequest, "Maks antall mottakere i en request er 1000.")
                         } else {
-                            (request.ytelseskoder ?: listOf("ALLE")).forEach { Metrics.ytelsestypeCounter(orgnr, it) }
+                            (request.ytelseskoder ?: listOf("ALLE")).forEach { Metrics.ytelsestypeCounter(orgnr, it).increment() }
                             call.respond(urClient.finnYtelser(orgnr, correlationId, request))
                         }
                     } catch (e: Exception) {
