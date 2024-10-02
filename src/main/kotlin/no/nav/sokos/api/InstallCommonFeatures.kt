@@ -22,7 +22,6 @@ import io.micrometer.core.instrument.binder.system.ProcessorMetrics
 import io.micrometer.core.instrument.binder.system.UptimeMetrics
 import mu.KotlinLogging
 import no.nav.sokos.metrics.Metrics
-import no.nav.sokos.secureLogger
 import org.slf4j.event.Level
 import java.util.UUID
 
@@ -65,17 +64,7 @@ fun Application.installCommonFeatures() {
             ProcessorMetrics()
         )
         timers { call, ex ->
-            ex?.let { secureLogger.info(ex) { "Timer exception: ${ex.message}" } }
-            try {
-                if (call.request.path().startsWith("/ur-ekstern/api/v1/finn-ytelser")) {
-                    call.hentHjemmelshaver()?.let {
-                        secureLogger.info { "Kall til finn-ytelser fra orgnr $it" }
-                        tag("orgnr", it)
-                    } ?: tag("orgnr", "n/a")
-                }
-            } catch (e: Exception) {
-                secureLogger.error(e) { "WHAT THE" }
-            }
+            tag("bob", "burger")
         }
     }
 }
