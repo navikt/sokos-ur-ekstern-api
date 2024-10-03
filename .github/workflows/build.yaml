@@ -6,8 +6,8 @@ on:
       - dev
       - main
     paths-ignore:
-      - '.github/workflows/alerts.yml'
-      - '.nais/alerterator.yml'
+      - '.github/workflows/alerts.yaml'
+      - '.nais/alerterator.yaml'
       - '**.md'
   workflow_dispatch:
 
@@ -55,4 +55,4 @@ jobs:
         env:
           IMAGE: ${{ needs.build.outputs.image }}
           CLUSTER: dev-gcp
-          RESOURCE: .nais/naiserator-dev.yml
+          RESOURCE: .nais/naiserator-dev.yaml

@@ -1,0 +1,22 @@
+name: Deploy alerts
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'alerts.yaml'
+      - '../../.nais/alerterator.yaml'
+  workflow_dispatch:
+jobs:
+  apply-alerts-dev:
+    name: Apply alerts to cluster dev-fss
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: deploy to dev
+        uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          CLUSTER: dev-fss
+          RESOURCE: .nais/alerterator.yaml

@@ -1,0 +1,62 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: sokos-ur-ekstern-api-alerts
+  namespace: okonomi
+  labels:
+    team: okonomi
+spec:
+  groups:
+    - name: sokos-ur-ekstern-api-alerts
+      rules:
+        - alert: Applikasjon nede
+          expr: kube_deployment_status_replicas_available{deployment="sokos-ur-ekstern-api"} == 0
+          for: 1m
+          annotations:
+            action: "`kubectl describe pod <podname>` -> `kubectl logs <podname>`"
+            summary: "App \{{ $labels.deployment }} er nede i namespace \{{ $labels.namespace }}"
+          labels:
+            severity: danger
+            namespace: okonomi
+
+        - alert: Høy andel error i logger
+          expr: sum by(log_app, log_pod_name, log_namespace) (floor(increase(logd_messages_total{log_app="sokos-ur-ekstern-api", log_level="Error"}[2m]))) > 2
+          for: 2m
+          annotations:
+            action: "`kubectl logs \{{ $labels.log_pod_name }} -n \{{ $labels.log_namespace }}`"
+            summary: "Høy andel error i logger for app \{{ $labels.log_app }} feiler i namespace \{{ $labels.log_namespace }}"
+          labels:
+            severity: danger
+            namespace: okonomi
+
+        - alert: Høy andel warning i logger
+          expr: sum by(log_app, log_pod_name, log_namespace) (floor(increase(logd_messages_total{log_app="sokos-ur-ekstern-api", log_level="Warning"}[2m]))) > 2
+          for: 2m
+          annotations:
+            action: "`kubectl logs \{{ $labels.log_pod_name }} -n \{{ $labels.log_namespace }}`"
+            summary: "Høy andel warning i logger for app \{{ $labels.log_app }} feiler i namespace \{{ $labels.log_namespace }}"
+          labels:
+            severity: warning
+            namespace: okonomi
+
+        - alert: Høy andel HTTP serverfeil (5xx responser)
+          expr: floor(increase(ktor_http_server_requests_seconds_count{status=~"5.*", app="sokos-ur-ekstern-api"}[3m])) > 2
+          for: 1m
+          annotations:
+            summary: "Følgende request feilet: `Status \{{ $labels.status }} - \{{ $labels.method }} \{{ $labels.route }}`.\n
+                          Sjekk loggene for å se hvorfor dette feiler."
+            action: "`kubectl logs \{{ $labels.pod }} -n \{{ $labels.namespace }}`"
+          labels:
+            severity: danger
+            namespace: okonomi
+
+        - alert: Høy andel HTTP klientfeil (4xx responser)
+          expr: floor(increase(ktor_http_server_requests_seconds_count{status=~"4.*", status!~"404", app="sokos-ur-ekstern-api"}[3m])) > 2
+          for: 1m
+          annotations:
+            summary: "Følgende request feilet: `Status \{{ $labels.status }} - \{{ $labels.method }} \{{ $labels.route }}`.\n
+                          Sjekk loggene for å se hvorfor dette feiler"
+            action: "`kubectl logs \{{ $labels.pod }} -n \{{ $labels.namespace }}`"
+          labels:
+            severity: danger
+            namespace: okonomi

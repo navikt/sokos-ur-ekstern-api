@@ -64,9 +64,8 @@ fun Application.installCommonFeatures() {
             ProcessorMetrics()
         )
         timers { call, _ ->
-            if (call.request.path().startsWith("/ur-ekstern/api/v1/finn-ytelser")) {
-                tag("orgnr", call.hentHjemmelshaver())
-            } else tag("orgnr", "n/a")
+            val isUrEksternApi = call.request.path().startsWith("/ur-ekstern/api")
+            tag("orgnr", if (isUrEksternApi) call.hentHjemmelshaver() else "n/a")
         }
     }
 }
