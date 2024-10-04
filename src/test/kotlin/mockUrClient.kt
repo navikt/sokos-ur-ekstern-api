@@ -42,8 +42,8 @@ fun setupMockHttpClient(statusCode: HttpStatusCode = HttpStatusCode.OK): HttpCli
 
 val requestHarData = """
     {
-      "navurOppResv1OperationResponse": {
-        "MHA1RESPONSE": {
+      "navurOppResv2OperationResponse": {
+        "MHA2RESPONSE": {
           "response": {
             "correlationId": "string",
             "status": "OK",
@@ -72,8 +72,8 @@ val requestHarData = """
 
 val requestManglerData = """
     {
-      "navurOppResv1OperationResponse": {
-        "MHA1RESPONSE": {
+      "navurOppResv2OperationResponse": {
+        "MHA2RESPONSE": {
           "response": {
             "correlationId": "string",
             "status": "OK",

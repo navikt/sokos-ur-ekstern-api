@@ -8,7 +8,6 @@ import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.http.isSuccess
-import mu.KotlinLogging
 import no.nav.sokos.api.entitet.FinnYtelserRequest
 import no.nav.sokos.api.entitet.Mottaker
 import no.nav.sokos.api.entitet.Periode
@@ -28,7 +27,7 @@ class UrClient(
     private val urConfig: Configuration.UrConfig,
     private val client: HttpClient = urHttpClient(urConfig)
 ) {
-    private val hentYtelserPath = "/navuroppresv1api/v1/finn-ytelser"
+    private val hentYtelserPath = "/navuroppresv2api/v2/finn-ytelser"
 
     suspend fun finnYtelser(orgnr: String, correlationId: String, request: FinnYtelserRequest): List<Mottaker> {
         val urRequest = UrFinnYtelserRequest(
@@ -61,7 +60,7 @@ class UrClient(
         if (response.status.isSuccess()) {
             val body = response.body<UrFinnYtelserResponse>()
             secureLogger.info { body }
-            val responseData = body.navurOppResv1OperationResponse.MHA1RESPONSE.response
+            val responseData = body.operation.container.response
             if (responseData.status.uppercase() == "OK") {
                 return responseData.resultatTabell.groupBy({it.mottakerId}) { urYtelse ->
                     if (urYtelse.ytelse.isNotBlank()) {

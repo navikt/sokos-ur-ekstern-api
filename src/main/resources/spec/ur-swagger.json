@@ -1,20 +1,20 @@
 {
   "swagger" : "2.0",
   "info" : {
-    "description" : "",
+    "description" : "REST tjenste for oppslag i UR. Kommuniserer med sokos-ur-ekstern-api på nais",
     "version" : "1.0.0",
-    "title" : "navuroppresv1api"
+    "title" : "navuroppresv2api"
   },
   "host" : "localhost:8080",
-  "basePath" : "/navuroppresv1api",
+  "basePath" : "/navuroppresv2api",
   "schemes" : [ "https", "http" ],
   "consumes" : [ "application/json" ],
   "produces" : [ "application/json" ],
   "paths" : {
-    "/v1/finn-ytelser" : {
+    "/v2/finn-ytelser" : {
       "post" : {
-        "tags" : [ "navuroppresv1api" ],
-        "operationId" : "postNavurOppResv1",
+        "tags" : [ "navuroppresv2api" ],
+        "operationId" : "postNavurOppResv2",
         "parameters" : [ {
           "name" : "Authorization",
           "in" : "header",
@@ -22,18 +22,18 @@
           "type" : "string"
         }, {
           "in" : "body",
-          "name" : "postNavurOppResv1_request",
+          "name" : "postNavurOppResv2_request",
           "description" : "request body",
           "required" : true,
           "schema" : {
-            "$ref" : "#/definitions/postNavurOppResv1_request"
+            "$ref" : "#/definitions/postNavurOppResv2_request"
           }
         } ],
         "responses" : {
           "200" : {
             "description" : "OK",
             "schema" : {
-              "$ref" : "#/definitions/postNavurOppResv1_response_200"
+              "$ref" : "#/definitions/postNavurOppResv2_response_200"
             }
           }
         }
@@ -41,13 +41,13 @@
     }
   },
   "definitions" : {
-    "postNavurOppResv1_request" : {
+    "postNavurOppResv2_request" : {
       "type" : "object",
       "properties" : {
-        "navurOppResv1Operation" : {
+        "navurOppResv2Operation" : {
           "type" : "object",
           "properties" : {
-            "MHA1REQUEST" : {
+            "MHA2REQUEST" : {
               "type" : "object",
               "properties" : {
                 "request" : {
@@ -85,7 +85,7 @@
                         }
                       },
                       "maxItems" : 30,
-                      "minItems" : 1
+                      "minItems" : 0
                     },
                     "datoPostertFom" : {
                       "type" : "string",
@@ -107,24 +107,24 @@
                         }
                       },
                       "maxItems" : 1000,
-                      "minItems" : 1
+                      "minItems" : 0
                     }
                   }
                 }
               }
             }
           },
-          "required" : [ "MHA1REQUEST" ]
+          "required" : [ "MHA2REQUEST" ]
         }
       }
     },
-    "postNavurOppResv1_response_200" : {
+    "postNavurOppResv2_response_200" : {
       "type" : "object",
       "properties" : {
-        "navurOppResv1OperationResponse" : {
+        "navurOppResv2OperationResponse" : {
           "type" : "object",
           "properties" : {
-            "MHA1RESPONSE" : {
+            "MHA2RESPONSE" : {
               "type" : "object",
               "properties" : {
                 "response" : {
@@ -207,7 +207,7 @@
               }
             }
           },
-          "required" : [ "MHA1RESPONSE" ]
+          "required" : [ "MHA2RESPONSE" ]
         }
       }
     }

@@ -5,12 +5,13 @@ import java.math.BigDecimal
 import java.time.LocalDate
 
 data class UrFinnYtelserResponse (
-    val navurOppResv1OperationResponse: FinnYtelserResponseOperation
+    @field:JsonProperty("navurOppResv2OperationResponse")
+    val operation: FinnYtelserResponseOperation
 )
 
 data class FinnYtelserResponseOperation (
-    @field:JsonProperty("MHA1RESPONSE")
-    val MHA1RESPONSE: FinnYtelserResponseContainer
+    @field:JsonProperty("MHA2RESPONSE")
+    val container: FinnYtelserResponseContainer
 )
 
 data class FinnYtelserResponseContainer (

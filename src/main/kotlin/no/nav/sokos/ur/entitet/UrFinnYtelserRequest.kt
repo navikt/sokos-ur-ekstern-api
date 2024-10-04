@@ -4,12 +4,13 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import java.time.LocalDate
 
 data class UrFinnYtelserRequest (
-    val navurOppResv1Operation: FinnYtelserRequestOperation
+    @field:JsonProperty("navurOppResv2Operation")
+    val operation: FinnYtelserRequestOperation
 )
 
 data class FinnYtelserRequestOperation (
-    @field:JsonProperty("MHA1REQUEST")
-    val MHA1REQUEST: FinnYtelserRequestContainer
+    @field:JsonProperty("MHA2REQUEST")
+    val container: FinnYtelserRequestContainer
 )
 
 data class FinnYtelserRequestContainer (
