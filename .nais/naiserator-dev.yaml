@@ -37,6 +37,12 @@ spec:
         - ipv4: 155.55.1.82  # UR via zos-connect
           ports:
             - port: 9080
+  azure:
+    application:
+      enabled: true
+      claims:
+        extra:
+          - azp_name
   maskinporten:
     enabled: true
     scopes:

@@ -14,7 +14,7 @@ data class FinnYtelserRequestOperation (
 )
 
 data class FinnYtelserRequestContainer (
-    val request: FinnYtelser
+    val request: UrFinnYtelser
 )
 
 data class MottakerIdTabell (
@@ -25,7 +25,7 @@ data class YtelseTabell (
     val ytelsesKode: String
 )
 
-data class FinnYtelser (
+data class UrFinnYtelser (
     val orgnr: String,
     val correlationId: String,
     val hjemmelshaver: String,

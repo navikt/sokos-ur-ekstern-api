@@ -8,6 +8,7 @@ import io.restassured.RestAssured
 import io.restassured.config.ObjectMapperConfig
 import io.restassured.config.RestAssuredConfig
 import io.restassured.http.Header
+import no.nav.sokos.api.entitet.FinnYtelserForOrgnummerRequest
 import no.nav.sokos.api.entitet.FinnYtelserRequest
 import no.nav.sokos.api.entitet.Mottaker
 import no.nav.sokos.api.entitet.Periode
@@ -62,6 +63,26 @@ class EksternApiKtTest {
 
         assertEquals("123", jsonMapper.readValue<List<Mottaker>>(apiResponse.body.asString())[0].mottakerId)
     }
+
+    @Test
+    fun urEksternApiMedOrgnummerRequestHarData() {
+        val apiResponse = RestAssured.given()
+            .filter(validationFilter)
+            .header(Header("Content-Type", "application/json"))
+            .header(Header("x-correlation-id", "3"))
+            .body(FinnYtelserForOrgnummerRequest(
+                periode = Periode(LocalDate.now(), LocalDate.now()),
+                ytelseskoder = listOf("AAP"),
+                mottakere = listOf("123"),
+                orgnummer = "orgnr"
+            ))
+            .post("/ur-ekstern/api/v1/finn-ytelser-for-orgnummer")
+
+        apiResponse.then().statusCode(200)
+
+        assertEquals("123", jsonMapper.readValue<List<Mottaker>>(apiResponse.body.asString())[0].mottakerId)
+    }
+
 
     companion object {
         @JvmStatic

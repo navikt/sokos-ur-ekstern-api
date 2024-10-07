@@ -8,19 +8,20 @@ import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.http.isSuccess
-import no.nav.sokos.api.entitet.FinnYtelserRequest
 import no.nav.sokos.api.entitet.Mottaker
 import no.nav.sokos.api.entitet.Periode
 import no.nav.sokos.api.entitet.Ytelse
+import no.nav.sokos.api.modell.FinnYtelser
 import no.nav.sokos.config.Configuration
 import no.nav.sokos.secureLogger
-import no.nav.sokos.ur.entitet.FinnYtelser
 import no.nav.sokos.ur.entitet.FinnYtelserRequestContainer
 import no.nav.sokos.ur.entitet.FinnYtelserRequestOperation
 import no.nav.sokos.ur.entitet.MottakerIdTabell
+import no.nav.sokos.ur.entitet.UrFinnYtelser
 import no.nav.sokos.ur.entitet.UrFinnYtelserRequest
 import no.nav.sokos.ur.entitet.UrFinnYtelserResponse
 import no.nav.sokos.ur.entitet.YtelseTabell
+import org.slf4j.MDC
 
 
 class UrClient(
@@ -29,18 +30,18 @@ class UrClient(
 ) {
     private val hentYtelserPath = "/navuroppresv2api/v2/finn-ytelser"
 
-    suspend fun finnYtelser(orgnr: String, correlationId: String, request: FinnYtelserRequest): List<Mottaker> {
+    suspend fun finnYtelser(finnYtelser: FinnYtelser): List<Mottaker> {
         val urRequest = UrFinnYtelserRequest(
             FinnYtelserRequestOperation(
                 FinnYtelserRequestContainer(
-                    FinnYtelser(
-                        orgnr = orgnr,
-                        correlationId = correlationId,
-                        hjemmelshaver = "husbanKEN",
-                        datoPostertFom = request.periode.fom,
-                        datoPostertTom = request.periode.tom,
-                        ytelseTabell = request.ytelseskoder?.map { YtelseTabell(ytelsesKode = it) } ?: emptyList(),
-                        mottakerIdTabell = request.mottakere.map { MottakerIdTabell(mottakerId = it) },
+                    UrFinnYtelser(
+                        orgnr = finnYtelser.orgnummer,
+                        correlationId = MDC.get("x-correlation-id"),
+                        hjemmelshaver = "ikkeIBruk",
+                        datoPostertFom = finnYtelser.fom,
+                        datoPostertTom = finnYtelser.tom,
+                        ytelseTabell = finnYtelser.ytelseskoder?.map { YtelseTabell(ytelsesKode = it) } ?: emptyList(),
+                        mottakerIdTabell = finnYtelser.mottakere.map { MottakerIdTabell(mottakerId = it) },
                         bruker = urConfig.username,
                         passord = urConfig.password
                     )

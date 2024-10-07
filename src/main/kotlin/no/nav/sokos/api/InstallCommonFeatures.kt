@@ -15,12 +15,15 @@ import io.ktor.server.plugins.callloging.CallLogging
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.doublereceive.DoubleReceive
 import io.ktor.server.request.path
+import io.ktor.server.request.receive
 import io.micrometer.core.instrument.binder.jvm.JvmGcMetrics
 import io.micrometer.core.instrument.binder.jvm.JvmMemoryMetrics
 import io.micrometer.core.instrument.binder.jvm.JvmThreadMetrics
 import io.micrometer.core.instrument.binder.system.ProcessorMetrics
 import io.micrometer.core.instrument.binder.system.UptimeMetrics
+import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
+import no.nav.sokos.api.entitet.FinnYtelserForOrgnummerRequest
 import no.nav.sokos.metrics.Metrics
 import org.slf4j.event.Level
 import java.util.UUID
@@ -64,8 +67,18 @@ fun Application.installCommonFeatures() {
             ProcessorMetrics()
         )
         timers { call, _ ->
-            val isUrEksternApi = call.request.path().startsWith("/ur-ekstern/api")
-            tag("orgnr", if (isUrEksternApi) call.hentHjemmelshaver() else "n/a")
+            val orgnr = when {
+                call.request.path().endsWith("finn-ytelser-for-orgnummer") ->
+                    runBlocking { call.receive<FinnYtelserForOrgnummerRequest>().orgnummer }
+
+                call.request.path().endsWith("finn-ytelser") -> call.hentHjemmelshaver() ?: "MANGLER"
+
+                else -> "n/a"
+            }
+            tag("orgnr", orgnr)
+            tag("konsument", call.hentKallendeSystem() ?: "EKSTERN")
         }
+
     }
 }
+

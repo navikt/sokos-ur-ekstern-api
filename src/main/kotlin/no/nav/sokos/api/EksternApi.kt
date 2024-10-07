@@ -12,31 +12,57 @@ import io.ktor.server.response.respond
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
+import no.nav.sokos.api.Sikkerhetskonfigurasjon.AZUREAD
+import no.nav.sokos.api.Sikkerhetskonfigurasjon.MASKINPORTEN
+import no.nav.sokos.api.entitet.FinnYtelserForOrgnummerRequest
 import no.nav.sokos.api.entitet.FinnYtelserRequest
+import no.nav.sokos.api.modell.FinnYtelser
 import no.nav.sokos.metrics.Metrics
 import no.nav.sokos.secureLogger
 import no.nav.sokos.ur.UrClient
-import org.slf4j.MDC
 
 fun Application.urEksternApi(
     useAuthentication: Boolean = true,
     urClient: UrClient
 ) {
     routing {
-        authenticate(useAuthentication) {
+        authenticate(useAuthentication, MASKINPORTEN.name) {
             route("ur-ekstern/api") {
                 post("v1/finn-ytelser") {
                     try {
-                        val orgnr = call.hentHjemmelshaver(useAuthentication)
-                        val correlationId = MDC.get("x-correlation-id")
+                        val orgnr = if (useAuthentication) call.hentHjemmelshaver()!! else "TEST"
                         secureLogger.info { "$orgnr har gjort et kall" }
-
                         val request: FinnYtelserRequest = call.receive()
                         if (request.mottakere.size > 1000) {
                             call.respond(HttpStatusCode.BadRequest, "Maks antall mottakere i en request er 1000.")
                         } else {
-                            (request.ytelseskoder ?: listOf("ALLE")).forEach { Metrics.ytelsestypeCounter(orgnr, it).increment() }
-                            call.respond(urClient.finnYtelser(orgnr, correlationId, request))
+                            (request.ytelseskoder ?: listOf("ALLE")).forEach {
+                                Metrics.ytelsestypeCounter(orgnr, it).increment()
+                            }
+                            call.respond(urClient.finnYtelser(FinnYtelser(orgnr, request)))
+                        }
+                    } catch (e: Exception) {
+                        secureLogger.error(e) { "Noe gikk galt" }
+                        call.respond(HttpStatusCode.InternalServerError, "noe gikk galt")
+                    }
+                }
+            }
+        }
+        authenticate(useAuthentication, AZUREAD.name) {
+            route("ur-ekstern/api") {
+                post("v1/finn-ytelser-for-orgnummer") {
+                    try {
+                        val kallendeSystem = call.hentKallendeSystem()
+                        secureLogger.info { "$kallendeSystem har gjort et kall" }
+                        val request: FinnYtelserForOrgnummerRequest = call.receive()
+                        val orgnr = request.orgnummer
+                        if (request.mottakere.size > 1000) {
+                            call.respond(HttpStatusCode.BadRequest, "Maks antall mottakere i en request er 1000.")
+                        } else {
+                            (request.ytelseskoder ?: listOf("ALLE")).forEach {
+                                Metrics.ytelsestypeCounter(orgnr, it).increment()
+                            }
+                            call.respond(urClient.finnYtelser(FinnYtelser(request)))
                         }
                     } catch (e: Exception) {
                         secureLogger.error(e) { "Noe gikk galt" }
@@ -48,10 +74,13 @@ fun Application.urEksternApi(
     }
 }
 
-fun ApplicationCall.hentHjemmelshaver(useAuthentication: Boolean = true): String {
-    if (useAuthentication) {
-        val consumer: Claim? = this.authentication.principal<JWTPrincipal>()!!.payload.claims["consumer"]
-        val consumerId = consumer?.asMap()?.get("ID")?.toString()?.split(":")?.last()
-        return consumerId!!
-    } else return "TEST"
+fun ApplicationCall.hentHjemmelshaver(): String? {
+    val consumer: Claim? = this.authentication.principal<JWTPrincipal>()?.payload?.claims?.get("consumer")
+    val consumerId = consumer?.asMap()?.get("ID")?.toString()?.split(":")?.last()
+    return consumerId
+
+}
+
+fun ApplicationCall.hentKallendeSystem(): String? {
+        return authentication.principal<JWTPrincipal>()?.payload?.claims?.get("azp_name")?.asString()
 }
