@@ -28,7 +28,6 @@ data class YtelseTabell (
 data class UrFinnYtelser (
     val orgnr: String,
     val correlationId: String,
-    val hjemmelshaver: String,
     val datoPostertFom: LocalDate,
     val datoPostertTom: LocalDate,
     val ytelseTabell: List<YtelseTabell>,

@@ -37,7 +37,6 @@ class UrClient(
                     UrFinnYtelser(
                         orgnr = finnYtelser.orgnummer,
                         correlationId = MDC.get("x-correlation-id"),
-                        hjemmelshaver = "ikkeIBruk",
                         datoPostertFom = finnYtelser.fom,
                         datoPostertTom = finnYtelser.tom,
                         ytelseTabell = finnYtelser.ytelseskoder?.map { YtelseTabell(ytelsesKode = it) } ?: emptyList(),

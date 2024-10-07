@@ -61,10 +61,6 @@
                       "type" : "string",
                       "maxLength" : 36
                     },
-                    "hjemmelshaver" : {
-                      "type" : "string",
-                      "maxLength" : 16
-                    },
                     "bruker" : {
                       "type" : "string",
                       "maxLength" : 50
