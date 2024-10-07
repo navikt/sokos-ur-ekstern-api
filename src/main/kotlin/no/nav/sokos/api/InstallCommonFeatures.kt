@@ -28,7 +28,7 @@ import java.util.UUID
 
 fun Application.installCommonFeatures() {
     install(CallId) {
-        header("nav-call-id")
+        header("x-correlation-id")
         generate { UUID.randomUUID().toString() }
         verify { it.isNotEmpty() }
     }
