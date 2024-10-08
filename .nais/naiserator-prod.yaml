@@ -62,7 +62,7 @@ spec:
         - name: "nav:reskontro:ytelser.read"
   ingresses:
     - https://sokos-ur-ekstern-api.intern.nav.no
-    - https://sokos-ur-ekstern-api.ekstern.nav.no
+    - https://sokos-ur-ekstern-api.nav.no
   envFrom:
     - secret: sokos-ur-ekstern-api-secrets
   env:
