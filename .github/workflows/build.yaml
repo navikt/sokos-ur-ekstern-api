@@ -56,3 +56,16 @@ jobs:
           IMAGE: ${{ needs.build.outputs.image }}
           CLUSTER: dev-gcp
           RESOURCE: .nais/naiserator-dev.yaml
+
+  deploy-prod:
+    name: Deploy to prod-fss
+    needs: [build, deploy-dev]
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: nais/deploy/actions/deploy@v2
+        env:
+          IMAGE: ${{ needs.build.outputs.image }}
+          CLUSTER: prod-gcp
+          RESOURCE: .nais/naiserator-prod.yaml
