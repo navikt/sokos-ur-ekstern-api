@@ -24,6 +24,10 @@ import no.nav.sokos.ur.entitet.YtelseTabell
 import org.slf4j.MDC
 
 
+private const val UGYLDIG_ORGNUMMER = "OF"
+private const val FEIL_YTELSESKODE_FOR_HJEMMEL = "DB"
+private const val IKKE_OPPGITT_MOTTAKER = "IF"
+
 class UrClient(
     private val urConfig: Configuration.UrConfig,
     private val client: HttpClient = urHttpClient(urConfig)
@@ -61,23 +65,31 @@ class UrClient(
             val body = response.body<UrFinnYtelserResponse>()
             secureLogger.info { body }
             val responseData = body.operation.container.response
-            if (responseData.status.uppercase() == "OK") {
-                return responseData.resultatTabell.groupBy({it.mottakerId}) { urYtelse ->
-                    if (urYtelse.ytelse.isNotBlank()) {
-                        Ytelse(
-                            datoValutert = urYtelse.datoValutert!!,
-                            datoPostert = urYtelse.datoPostert!!,
-                            rettighetshaver = urYtelse.rettighetshaver,
-                            ytelse = urYtelse.ytelse,
-                            ytelseBeskrivelse = urYtelse.ytelseBeskrivelse,
-                            belop = urYtelse.belop,
-                            ytelsePeriode = Periode(urYtelse.datoUtbetFom!!, urYtelse.datoUtbetTom!!),
-                            typeUtbetaling = urYtelse.typeUtbetaling.takeIf { it.isNotBlank() }
-                        )
-                    } else null
-                }.map { (k, v) -> Mottaker(k, v.filterNotNull()) }
+            when (responseData.status.uppercase()) {
+                "OK" -> {
+                    return responseData.resultatTabell.groupBy({ it.mottakerId }) { urYtelse ->
+                        if (urYtelse.ytelse.isNotBlank()) {
+                            Ytelse(
+                                datoValutert = urYtelse.datoValutert!!,
+                                datoPostert = urYtelse.datoPostert!!,
+                                rettighetshaver = urYtelse.rettighetshaver,
+                                ytelse = urYtelse.ytelse,
+                                ytelseBeskrivelse = urYtelse.ytelseBeskrivelse,
+                                belop = urYtelse.belop,
+                                ytelsePeriode = Periode(urYtelse.datoUtbetFom!!, urYtelse.datoUtbetTom!!),
+                                typeUtbetaling = urYtelse.typeUtbetaling.takeIf { it.isNotBlank() }
+                            )
+                        } else null
+                    }.map { (k, v) -> Mottaker(k, v.filterNotNull()) }
+                }
+
+                FEIL_YTELSESKODE_FOR_HJEMMEL, UGYLDIG_ORGNUMMER, IKKE_OPPGITT_MOTTAKER -> {
+                    throw KlientFeil("Klientfeil: ${responseData.statusMelding}")
+                }
             }
         }
         throw Exception("Feil fra stormaskin")
     }
 }
+
+class KlientFeil(val feilmelding: String) : Exception(feilmelding)

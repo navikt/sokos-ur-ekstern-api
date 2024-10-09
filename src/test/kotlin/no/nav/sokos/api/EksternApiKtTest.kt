@@ -43,7 +43,10 @@ class EksternApiKtTest {
 
         apiResponse.then().statusCode(200)
 
-        assertEquals("123", jsonMapper.readValue<List<Mottaker>>(apiResponse.body.asString())[0].mottakerId)
+        val response = jsonMapper.readValue<List<Mottaker>>(apiResponse.body.asString())
+        assertEquals(1, response.size)
+        assertEquals("123", response[0].mottakerId)
+        assertEquals(2, response[0].ytelser.size)
     }
 
     @Test
@@ -61,7 +64,28 @@ class EksternApiKtTest {
 
         apiResponse.then().statusCode(200)
 
-        assertEquals("123", jsonMapper.readValue<List<Mottaker>>(apiResponse.body.asString())[0].mottakerId)
+        val response = jsonMapper.readValue<List<Mottaker>>(apiResponse.body.asString())
+        assertEquals(1, response.size)
+        assertEquals("123", response[0].mottakerId)
+        assertEquals(0, response[0].ytelser.size)
+    }
+
+    @Test
+    fun urEksternApiRequestManglerHjemmel() {
+        val apiResponse = RestAssured.given()
+            .filter(validationFilter)
+            .header(Header("Content-Type", "application/json"))
+            .header(Header("x-correlation-id", "3"))
+            .body(FinnYtelserRequest(
+                periode = Periode(LocalDate.now(), LocalDate.now()),
+                ytelseskoder = listOf("AAP"),
+                mottakere = listOf("FEIL")
+            ))
+            .post("/ur-ekstern/api/v1/finn-ytelser")
+
+        apiResponse.then().statusCode(403)
+
+        assertEquals("Klientfeil: Feil ytelsekode for hjemmel", apiResponse.body.asString())
     }
 
     @Test

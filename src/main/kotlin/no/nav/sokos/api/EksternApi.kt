@@ -19,6 +19,7 @@ import no.nav.sokos.api.entitet.FinnYtelserRequest
 import no.nav.sokos.api.modell.FinnYtelser
 import no.nav.sokos.metrics.Metrics
 import no.nav.sokos.secureLogger
+import no.nav.sokos.ur.KlientFeil
 import no.nav.sokos.ur.UrClient
 
 fun Application.urEksternApi(
@@ -36,14 +37,17 @@ fun Application.urEksternApi(
                         if (request.mottakere.size > 1000) {
                             call.respond(HttpStatusCode.BadRequest, "Maks antall mottakere i en request er 1000.")
                         } else {
-                            (request.ytelseskoder ?: listOf("ALLE")).forEach {
-                                Metrics.ytelsestypeCounter(orgnr, it).increment()
-                            }
+                            incrementYtelsestyeMetrikker(request.ytelseskoder, orgnr)
                             call.respond(urClient.finnYtelser(FinnYtelser(orgnr, request)))
                         }
                     } catch (e: Exception) {
-                        secureLogger.error(e) { "Noe gikk galt" }
-                        call.respond(HttpStatusCode.InternalServerError, "noe gikk galt")
+                        if (e is KlientFeil) {
+                            secureLogger.warn { "klientfeil ${e.feilmelding}" }
+                            call.respond(HttpStatusCode.Forbidden, e.feilmelding)
+                        } else {
+                            secureLogger.error(e) { "Noe gikk galt" }
+                            call.respond(HttpStatusCode.InternalServerError, "noe gikk galt")
+                        }
                     }
                 }
             }
@@ -59,18 +63,27 @@ fun Application.urEksternApi(
                         if (request.mottakere.size > 1000) {
                             call.respond(HttpStatusCode.BadRequest, "Maks antall mottakere i en request er 1000.")
                         } else {
-                            (request.ytelseskoder ?: listOf("ALLE")).forEach {
-                                Metrics.ytelsestypeCounter(orgnr, it).increment()
-                            }
+                            incrementYtelsestyeMetrikker(request.ytelseskoder, orgnr)
                             call.respond(urClient.finnYtelser(FinnYtelser(request)))
                         }
                     } catch (e: Exception) {
-                        secureLogger.error(e) { "Noe gikk galt" }
-                        call.respond(HttpStatusCode.InternalServerError, "noe gikk galt")
+                        if (e is KlientFeil) {
+                            secureLogger.warn { "klientfeil ${e.feilmelding}" }
+                            call.respond(HttpStatusCode.Forbidden, e.feilmelding)
+                        } else {
+                            secureLogger.error(e) { "Noe gikk galt" }
+                            call.respond(HttpStatusCode.InternalServerError, "noe gikk galt")
+                        }
                     }
                 }
             }
         }
+    }
+}
+
+private fun incrementYtelsestyeMetrikker(ytelesesKoder: List<String>?, orgnr: String) {
+    (ytelesesKoder ?: listOf("ALLE")).forEach {
+        Metrics.ytelsestypeCounter(orgnr, it).increment()
     }
 }
 
@@ -82,5 +95,5 @@ fun ApplicationCall.hentHjemmelshaver(): String? {
 }
 
 fun ApplicationCall.hentKallendeSystem(): String? {
-        return authentication.principal<JWTPrincipal>()?.payload?.claims?.get("azp_name")?.asString()
+    return authentication.principal<JWTPrincipal>()?.payload?.claims?.get("azp_name")?.asString()
 }
