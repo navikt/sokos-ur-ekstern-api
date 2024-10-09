@@ -127,7 +127,7 @@ val requestMedKlientFeil = """
         "MHA2RESPONSE": {
           "response": {
             "correlationId": "string",
-            "status": "DB",
+            "status": "YF",
             "statusMelding": "Feil ytelsekode for hjemmel",
             "resultatTabell": [
             ]

@@ -24,8 +24,8 @@ import no.nav.sokos.ur.entitet.YtelseTabell
 import org.slf4j.MDC
 
 
-private const val UGYLDIG_ORGNUMMER = "OF"
-private const val FEIL_YTELSESKODE_FOR_HJEMMEL = "DB"
+private const val FEIL_VED_SJEKK_AV_ORGNUMMER = "EO"
+private const val FEIL_YTELSESKODE_FOR_HJEMMEL = "YF"
 private const val IKKE_OPPGITT_MOTTAKER = "IF"
 
 class UrClient(
@@ -83,7 +83,7 @@ class UrClient(
                     }.map { (k, v) -> Mottaker(k, v.filterNotNull()) }
                 }
 
-                FEIL_YTELSESKODE_FOR_HJEMMEL, UGYLDIG_ORGNUMMER, IKKE_OPPGITT_MOTTAKER -> {
+                FEIL_YTELSESKODE_FOR_HJEMMEL, FEIL_VED_SJEKK_AV_ORGNUMMER, IKKE_OPPGITT_MOTTAKER -> {
                     throw KlientFeil("Klientfeil: ${responseData.statusMelding}")
                 }
             }
