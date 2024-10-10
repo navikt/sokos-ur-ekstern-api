@@ -24,7 +24,7 @@ import no.nav.sokos.ur.entitet.YtelseTabell
 import org.slf4j.MDC
 
 
-private const val FEIL_VED_SJEKK_AV_ORGNUMMER = "EO"
+private const val FEIL_VED_SJEKK_AV_ORGNUMMER = "OF"
 private const val FEIL_YTELSESKODE_FOR_HJEMMEL = "YF"
 private const val IKKE_OPPGITT_MOTTAKER = "IF"
 
