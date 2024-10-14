@@ -59,7 +59,6 @@ val requestHarData = """
               {
                 "mottakerId": "123",
                 "datoPostert": "2024-09-25T21:00:00.000",
-                "datoValutert": "2024-09-25T21:00:00.000",
                 "rettighetshaver": "string",
                 "ytelse": "string",
                 "ytelseBeskrivelse": "string",
