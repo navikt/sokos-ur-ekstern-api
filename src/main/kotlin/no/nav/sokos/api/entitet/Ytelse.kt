@@ -5,7 +5,7 @@ import java.time.LocalDate
 
 class Ytelse(
     val datoPostert: LocalDate,
-    val datoValutert: LocalDate,
+    val datoValutert: LocalDate? = null,
     val rettighetshaver: String,
     val ytelse: String,
     val ytelseBeskrivelse: String,

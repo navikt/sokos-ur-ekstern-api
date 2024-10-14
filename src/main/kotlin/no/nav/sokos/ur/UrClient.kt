@@ -70,7 +70,7 @@ class UrClient(
                     return responseData.resultatTabell.groupBy({ it.mottakerId }) { urYtelse ->
                         if (urYtelse.ytelse.isNotBlank()) {
                             Ytelse(
-                                datoValutert = urYtelse.datoValutert!!,
+                                datoValutert = urYtelse.datoValutert,
                                 datoPostert = urYtelse.datoPostert!!,
                                 rettighetshaver = urYtelse.rettighetshaver,
                                 ytelse = urYtelse.ytelse,

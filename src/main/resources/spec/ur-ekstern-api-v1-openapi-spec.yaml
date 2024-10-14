@@ -178,7 +178,6 @@ components:
       description: Informasjon om en utbetaling som er gjort.
       required:
         - datoPostert
-        - datoValutert
         - rettighetshaver
         - ytelse
         - ytelseBeskrivelse
