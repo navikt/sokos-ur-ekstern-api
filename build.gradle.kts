@@ -2,7 +2,7 @@ group = "no.nav.sokos"
 version = "1.0-SNAPSHOT"
 
 plugins {
-    kotlin("jvm") version "2.0.20"
+    kotlin("jvm") version "2.0.21"
     id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
@@ -10,19 +10,19 @@ repositories {
     mavenCentral()
 }
 
-val kotlinVersion = "2.0.20"
-val ktorVersion = "2.3.12"
+val kotlinVersion = "2.0.21"
+val ktorVersion = "3.0.0"
 val jacksonVersion = "2.18.0"
-val prometheusVersion = "1.13.5"
-val logbackVersion = "1.5.8"
+val prometheusVersion = "1.13.6"
+val logbackVersion = "1.5.10"
 val logstashVersion = "8.0"
 val swaggerUiVersion = "4.18.2"
 val kotlinLoggingVersion = "3.0.5"
 val commonsCodecVersion = "1.17.1"
 val nimbusVersion = "9.41.2"
-val junitVersion = "5.11.1"
+val junitVersion = "5.11.2"
 val restAssuredVersion = "5.5.0"
-val swaggerRequestValidatorVersion = "2.42.0"
+val swaggerRequestValidatorVersion = "2.43.0"
 
 dependencies {
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
