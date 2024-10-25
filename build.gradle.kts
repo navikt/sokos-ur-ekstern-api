@@ -20,7 +20,7 @@ val swaggerUiVersion = "4.18.2"
 val kotlinLoggingVersion = "3.0.5"
 val commonsCodecVersion = "1.17.1"
 val nimbusVersion = "9.41.2"
-val junitVersion = "5.11.2"
+val junitVersion = "5.11.3"
 val restAssuredVersion = "5.5.0"
 val swaggerRequestValidatorVersion = "2.43.0"
 
