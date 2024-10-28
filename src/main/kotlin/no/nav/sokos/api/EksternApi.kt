@@ -4,10 +4,10 @@ import com.auth0.jwt.interfaces.Claim
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
 import io.ktor.server.application.ApplicationCall
-import io.ktor.server.application.call
 import io.ktor.server.auth.authentication
 import io.ktor.server.auth.jwt.JWTPrincipal
 import io.ktor.server.request.receive
+import io.ktor.server.request.receiveText
 import io.ktor.server.response.respond
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
@@ -55,10 +55,10 @@ fun Application.urEksternApi(
         authenticate(useAuthentication, AZUREAD.name) {
             route("ur-ekstern/api") {
                 post("v1/finn-ytelser-for-orgnummer") {
+                    val kallendeSystem = call.hentKallendeSystem()
+                    secureLogger.info("$kallendeSystem har gjort en request: ${call.receiveText()}")
+                    val request: FinnYtelserForOrgnummerRequest = call.receive()
                     try {
-                        val kallendeSystem = call.hentKallendeSystem()
-                        secureLogger.info { "$kallendeSystem har gjort et kall" }
-                        val request: FinnYtelserForOrgnummerRequest = call.receive()
                         val orgnr = request.orgnummer
                         if (request.mottakere.size > 1000) {
                             call.respond(HttpStatusCode.BadRequest, "Maks antall mottakere i en request er 1000.")
