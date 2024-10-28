@@ -26,8 +26,6 @@
         <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
     </appender>
 
-    <logger name="no.nav.sokos.utbetaldata" level="info"/>
-
     <logger name="secureLogger" level="DEBUG" additivity="false">
         <appender-ref ref="${LOG_APPENDER:-secureLog}"/>
     </logger>
