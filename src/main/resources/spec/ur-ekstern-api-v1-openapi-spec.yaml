@@ -195,8 +195,10 @@ components:
           type: string
         ytelse:
           type: string
+          example: ALDERSPENSJON
         ytelseBeskrivelse:
           type: string
+          example: Alderspensjon
         ytelsePeriode:
           $ref: '#/components/schemas/Periode'
         belop:
@@ -207,6 +209,8 @@ components:
           type: string
         delytelseBeskrivelse:
           type: string
+          description: Spesifisering av en underytelse
+          example: Grunnpensjon
     Periode:
       type: object
       description: En periode angir et tidsintervall med fra-og-med og til-og-med.
