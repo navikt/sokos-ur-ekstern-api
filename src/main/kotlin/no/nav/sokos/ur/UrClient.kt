@@ -77,7 +77,8 @@ class UrClient(
                                 ytelseBeskrivelse = urYtelse.ytelseBeskrivelse,
                                 belop = urYtelse.belop,
                                 ytelsePeriode = Periode(urYtelse.datoUtbetFom!!, urYtelse.datoUtbetTom!!),
-                                typeUtbetaling = urYtelse.typeUtbetaling.takeIf { it.isNotBlank() }
+                                typeUtbetaling = urYtelse.typeUtbetaling.takeIf { it.isNotBlank() },
+                                delytelseBeskrivelse = urYtelse.kontoBeskrivelse
                             )
                         } else null
                     }.map { (k, v) -> Mottaker(k, v.filterNotNull()) }

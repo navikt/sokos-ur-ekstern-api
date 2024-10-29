@@ -30,10 +30,10 @@ fun Application.urEksternApi(
         authenticate(useAuthentication, MASKINPORTEN.name) {
             route("ur-ekstern/api") {
                 post("v1/finn-ytelser") {
+                    val orgnr = if (useAuthentication) call.hentHjemmelshaver()!! else "TEST"
+                    secureLogger.info ("$orgnr har gjort request: ${call.receiveText()}")
+                    val request: FinnYtelserRequest = call.receive()
                     try {
-                        val orgnr = if (useAuthentication) call.hentHjemmelshaver()!! else "TEST"
-                        secureLogger.info { "$orgnr har gjort et kall" }
-                        val request: FinnYtelserRequest = call.receive()
                         if (request.mottakere.size > 1000) {
                             call.respond(HttpStatusCode.BadRequest, "Maks antall mottakere i en request er 1000.")
                         } else {

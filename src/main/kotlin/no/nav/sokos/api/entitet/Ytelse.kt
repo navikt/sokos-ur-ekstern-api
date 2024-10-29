@@ -11,5 +11,6 @@ class Ytelse(
     val ytelseBeskrivelse: String,
     val ytelsePeriode: Periode,
     val belop: BigDecimal,
-    val typeUtbetaling: String?
+    val typeUtbetaling: String?,
+    val delytelseBeskrivelse: String
 )

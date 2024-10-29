@@ -183,6 +183,7 @@ components:
         - ytelseBeskrivelse
         - ytelsePeriode
         - belop
+        - delytelseBeskrivelse
       properties:
         datoPostert:
           type: string
@@ -203,6 +204,8 @@ components:
           format: doubble
           example: 999.99
         typeUtbetaling:
+          type: string
+        delytelseBeskrivelse:
           type: string
     Periode:
       type: object
