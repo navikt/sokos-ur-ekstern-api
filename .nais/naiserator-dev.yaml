@@ -55,16 +55,14 @@ spec:
     enabled: true
     scopes:
       exposes:
-        - name: "ytelser.read" # Scope: nav:reskontro:ytelser.read, subscope: reskontro:ytelser.read
+        - name: "ytelser.read" # Scope: nav:reskontro/ytelser.read, subscope: reskontro/ytelser.read
+          accessibleForAll: true
+          delegationSource: altinn
           enabled: true
+          separator: "/"
           product: "reskontro"
-          consumers:
-            - name: "NAV"
-              orgno: "889640782"
-            - name: "Husbanken"
-              orgno: "942114184"
       consumes:
-        - name: "nav:reskontro:ytelser.read"
+        - name: "nav:reskontro/ytelser.read"
   ingresses:
     - https://sokos-ur-ekstern-api.intern.dev.nav.no
     - https://sokos-ur-ekstern-api.ekstern.dev.nav.no
