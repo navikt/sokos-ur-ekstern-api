@@ -6,6 +6,7 @@ on:
       - dev
       - main
     paths-ignore:
+      - '.github/CODEOWNERS'
       - '.github/workflows/alerts.yaml'
       - '.nais/alerterator.yaml'
       - '**.md'
