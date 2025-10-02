@@ -15,11 +15,10 @@ spec:
     enabled: true
   resources:
     limits:
-      cpu: 750m
-      memory: 4Gi
+      memory: 1Gi
     requests:
-      cpu: 500m
-      memory: 512Mi
+      cpu: 12m
+      memory: 256Mi
   liveness:
     path: /internal/is_alive
     initialDelay: 10
