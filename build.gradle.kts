@@ -25,6 +25,7 @@ val swaggerRequestValidatorVersion = "2.46.0"
 
 dependencies {
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
+    implementation(platform("io.netty:netty-bom:4.2.6.Final"))
     implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
     implementation("io.ktor:ktor-server-call-id:$ktorVersion")
     implementation("io.ktor:ktor-server-call-logging:$ktorVersion")
