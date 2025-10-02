@@ -10,19 +10,18 @@ repositories {
     mavenCentral()
 }
 
-val kotlinVersion = "2.1.0"
-val ktorVersion = "3.0.3"
-val jacksonVersion = "2.18.2"
-val prometheusVersion = "1.14.3"
-val logbackVersion = "1.5.16"
-val logstashVersion = "8.0"
-val swaggerUiVersion = "4.18.2"
-val kotlinLoggingVersion = "3.0.5"
-val commonsCodecVersion = "1.17.2"
-val nimbusVersion = "10.0.2"
-val junitVersion = "5.11.4"
-val restAssuredVersion = "5.5.0"
-val swaggerRequestValidatorVersion = "2.44.1"
+val kotlinVersion = "2.2.20"
+val ktorVersion = "3.3.0"
+val jacksonVersion = "2.20.0"
+val prometheusVersion = "1.15.4"
+val logbackVersion = "1.5.18"
+val logstashVersion = "8.1"
+val kotlinLoggingVersion = "7.0.13"
+val commonsCodecVersion = "1.19.0"
+val nimbusVersion = "10.5"
+val junitVersion = "5.14.0"
+val restAssuredVersion = "5.5.6"
+val swaggerRequestValidatorVersion = "2.46.0"
 
 dependencies {
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
@@ -47,12 +46,12 @@ dependencies {
     implementation("ch.qos.logback:logback-core:$logbackVersion")
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
-    implementation("io.github.microutils:kotlin-logging-jvm:$kotlinLoggingVersion")
+    implementation("io.github.oshai:kotlin-logging:$kotlinLoggingVersion")
 
     testImplementation("io.ktor:ktor-client-mock:$ktorVersion")
     testImplementation("org.junit.jupiter:junit-jupiter:$junitVersion")
     testImplementation("org.jetbrains.kotlin:kotlin-test:$kotlinVersion")
-    testImplementation("io.rest-assured:rest-assured:$restAssuredVersion")
+    testImplementation("io.rest-assured:kotlin-extensions:$restAssuredVersion")
     testImplementation("com.atlassian.oai:swagger-request-validator-restassured:$swaggerRequestValidatorVersion")
 }
 

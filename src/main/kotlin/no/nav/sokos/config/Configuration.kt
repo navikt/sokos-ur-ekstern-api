@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import kotlinx.coroutines.runBlocking
-import mu.KotlinLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 import no.nav.sokos.defaultHttpClient
 import java.net.URI
 import java.util.concurrent.TimeUnit

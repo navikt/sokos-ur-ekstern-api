@@ -1,6 +1,8 @@
 package no.nav.sokos.api
 
-import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS
+import com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL
+import com.fasterxml.jackson.annotation.JsonInclude.Value.construct
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
@@ -22,7 +24,6 @@ import io.micrometer.core.instrument.binder.jvm.JvmThreadMetrics
 import io.micrometer.core.instrument.binder.system.ProcessorMetrics
 import io.micrometer.core.instrument.binder.system.UptimeMetrics
 import kotlinx.coroutines.runBlocking
-import mu.KotlinLogging
 import no.nav.sokos.api.entitet.FinnYtelserForOrgnummerRequest
 import no.nav.sokos.metrics.Metrics
 import org.slf4j.event.Level
@@ -36,7 +37,6 @@ fun Application.installCommonFeatures() {
         verify { it.isNotEmpty() }
     }
     install(CallLogging) {
-        logger = KotlinLogging.logger {}
         level = Level.INFO
         callIdMdc("x-correlation-id")
         disableDefaultColors()
@@ -50,7 +50,7 @@ fun Application.installCommonFeatures() {
         jackson {
             registerKotlinModule()
             registerModule(JavaTimeModule())
-            setSerializationInclusion(JsonInclude.Include.NON_NULL)
+            setDefaultPropertyInclusion(construct(NON_NULL, ALWAYS))
             disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
             disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             enable(SerializationFeature.INDENT_OUTPUT)

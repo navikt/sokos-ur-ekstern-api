@@ -1,5 +1,6 @@
 package no.nav.sokos.ur
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.post
@@ -13,7 +14,6 @@ import no.nav.sokos.api.entitet.Periode
 import no.nav.sokos.api.entitet.Ytelse
 import no.nav.sokos.api.modell.FinnYtelser
 import no.nav.sokos.config.Configuration
-import no.nav.sokos.secureLogger
 import no.nav.sokos.ur.entitet.FinnYtelserRequestContainer
 import no.nav.sokos.ur.entitet.FinnYtelserRequestOperation
 import no.nav.sokos.ur.entitet.MottakerIdTabell
@@ -21,12 +21,15 @@ import no.nav.sokos.ur.entitet.UrFinnYtelser
 import no.nav.sokos.ur.entitet.UrFinnYtelserRequest
 import no.nav.sokos.ur.entitet.UrFinnYtelserResponse
 import no.nav.sokos.ur.entitet.YtelseTabell
+import no.nav.sokos.logging.secureInfo
 import org.slf4j.MDC
 
 
 private const val FEIL_VED_SJEKK_AV_ORGNUMMER = "OF"
 private const val FEIL_YTELSESKODE_FOR_HJEMMEL = "YF"
 private const val IKKE_OPPGITT_MOTTAKER = "IF"
+
+private val logger = KotlinLogging.logger {}
 
 class UrClient(
     private val urConfig: Configuration.UrConfig,
@@ -52,18 +55,18 @@ class UrClient(
             )
         )
 
-        secureLogger.info { "Request: $urRequest" }
+        logger.secureInfo { "Request: $urRequest" }
 
         val response = client.post(urConfig.endpointUrl + hentYtelserPath) {
             contentType(ContentType.Application.Json)
             setBody(urRequest)
         }
 
-        secureLogger.info("Response: ${response.bodyAsText()}")
+        response.bodyAsText().let { logger.secureInfo { "Response: $it" } }
 
         if (response.status.isSuccess()) {
             val body = response.body<UrFinnYtelserResponse>()
-            secureLogger.info { body }
+            logger.secureInfo { body }
             val responseData = body.operation.container.response
             when (responseData.status.uppercase()) {
                 "OK" -> {

@@ -2,12 +2,18 @@ package no.nav.sokos.api
 
 import com.atlassian.oai.validator.restassured.OpenApiValidationFilter
 import com.fasterxml.jackson.module.kotlin.readValue
+import io.ktor.server.engine.EmbeddedServer
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
+import io.ktor.server.netty.NettyApplicationEngine
 import io.restassured.RestAssured
 import io.restassured.config.ObjectMapperConfig
 import io.restassured.config.RestAssuredConfig
 import io.restassured.http.Header
+import io.restassured.module.kotlin.extensions.Given
+import io.restassured.module.kotlin.extensions.Then
+import io.restassured.module.kotlin.extensions.When
+import io.restassured.response.ValidatableResponse
 import no.nav.sokos.api.entitet.FinnYtelserForOrgnummerRequest
 import no.nav.sokos.api.entitet.FinnYtelserRequest
 import no.nav.sokos.api.entitet.Mottaker
@@ -15,6 +21,7 @@ import no.nav.sokos.api.entitet.Periode
 import no.nav.sokos.config.Configuration
 import no.nav.sokos.jsonMapper
 import no.nav.sokos.ur.UrClient
+import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -29,93 +36,115 @@ class EksternApiKtTest {
     private val validationFilter = OpenApiValidationFilter("spec/ur-ekstern-api-v1-openapi-spec.yaml")
 
     @Test
-    fun urEksternApiHarData() {
-        val apiResponse = RestAssured.given()
-            .filter(validationFilter)
-            .header(Header("Content-Type", "application/json"))
-            .header(Header("x-correlation-id", "3"))
-            .body(FinnYtelserRequest(
-                periode = Periode(LocalDate.now(), LocalDate.now()),
-                ytelseskoder = listOf("AAP"),
-                mottakere = listOf("123")
-            ))
-            .post("/ur-ekstern/api/v1/finn-ytelser")
+    fun `ur-ekstern-api har data`() {
+        Given {
+            filter(validationFilter)
+            header(Header("Content-Type", "application/json"))
+            header(Header("x-correlation-id", "3"))
+            body(
+                FinnYtelserRequest(
+                    periode = Periode(LocalDate.now(), LocalDate.now()),
+                    ytelseskoder = listOf("AAP"),
+                    mottakere = listOf("123")
+                )
+            )
+        } When {
+            post("/ur-ekstern/api/v1/finn-ytelser")
+        } Then {
+            statusCode(200)
 
-        apiResponse.then().statusCode(200)
-
-        val response = jsonMapper.readValue<List<Mottaker>>(apiResponse.body.asString())
-        assertEquals(1, response.size)
-        assertEquals("123", response[0].mottakerId)
-        assertEquals(2, response[0].ytelser.size)
+            bodyAs<List<Mottaker>> { mottakerList ->
+                assertEquals(1, mottakerList.size)
+                assertEquals("123", mottakerList[0].mottakerId)
+                assertEquals(2, mottakerList[0].ytelser.size)
+            }
+        }
     }
 
     @Test
-    fun urEksternApiManglerData() {
-        val apiResponse = RestAssured.given()
-            .filter(validationFilter)
-            .header(Header("Content-Type", "application/json"))
-            .header(Header("x-correlation-id", "3"))
-            .body(FinnYtelserRequest(
-                periode = Periode(LocalDate.now(), LocalDate.now()),
-                ytelseskoder = listOf("AAP"),
-                mottakere = listOf("MANGLER")
-            ))
-            .post("/ur-ekstern/api/v1/finn-ytelser")
+    fun `ur-ekstern-api mangler data`() {
+        Given {
+            filter(validationFilter)
+            header(Header("Content-Type", "application/json"))
+            header(Header("x-correlation-id", "3"))
+            body(
+                FinnYtelserRequest(
+                    periode = Periode(LocalDate.now(), LocalDate.now()),
+                    ytelseskoder = listOf("AAP"),
+                    mottakere = listOf("MANGLER")
+                )
+            )
+        } When {
+            post("/ur-ekstern/api/v1/finn-ytelser")
+        } Then {
+            statusCode(200)
 
-        apiResponse.then().statusCode(200)
-
-        val response = jsonMapper.readValue<List<Mottaker>>(apiResponse.body.asString())
-        assertEquals(1, response.size)
-        assertEquals("123", response[0].mottakerId)
-        assertEquals(0, response[0].ytelser.size)
+            bodyAs<List<Mottaker>> { mottakerList ->
+                assertEquals(1, mottakerList.size)
+                assertEquals("123", mottakerList[0].mottakerId)
+                assertEquals(0, mottakerList[0].ytelser.size)
+            }
+        }
     }
 
     @Test
-    fun urEksternApiRequestManglerHjemmel() {
-        val apiResponse = RestAssured.given()
-            .filter(validationFilter)
-            .header(Header("Content-Type", "application/json"))
-            .header(Header("x-correlation-id", "3"))
-            .body(FinnYtelserRequest(
-                periode = Periode(LocalDate.now(), LocalDate.now()),
-                ytelseskoder = listOf("AAP"),
-                mottakere = listOf("FEIL")
-            ))
-            .post("/ur-ekstern/api/v1/finn-ytelser")
-
-        apiResponse.then().statusCode(403)
-
-        assertEquals("Klientfeil: Feil ytelsekode for hjemmel", apiResponse.body.asString())
+    fun `ur-ekstern-api request mangler hjemmel`() {
+        Given {
+            filter(validationFilter)
+            header(Header("Content-Type", "application/json"))
+            header(Header("x-correlation-id", "3"))
+            body(
+                FinnYtelserRequest(
+                    periode = Periode(LocalDate.now(), LocalDate.now()),
+                    ytelseskoder = listOf("AAP"),
+                    mottakere = listOf("FEIL")
+                )
+            )
+        } When {
+            post("/ur-ekstern/api/v1/finn-ytelser")
+        } Then {
+            statusCode(403)
+            assertEquals("Klientfeil: Feil ytelsekode for hjemmel", extract().body().asString())
+        }
     }
 
     @Test
-    fun urEksternApiMedOrgnummerRequestHarData() {
-        val apiResponse = RestAssured.given()
-            .filter(validationFilter)
-            .header(Header("Content-Type", "application/json"))
-            .header(Header("x-correlation-id", "3"))
-            .body(FinnYtelserForOrgnummerRequest(
-                periode = Periode(LocalDate.now(), LocalDate.now()),
-                ytelseskoder = listOf("AAP"),
-                mottakere = listOf("123"),
-                orgnummer = "orgnr"
-            ))
-            .post("/ur-ekstern/api/v1/finn-ytelser-for-orgnummer")
-
-        apiResponse.then().statusCode(200)
-
-        assertEquals("123", jsonMapper.readValue<List<Mottaker>>(apiResponse.body.asString())[0].mottakerId)
+    fun `ur-ekstern-api med orgnummer request har data`() {
+        Given {
+            filter(validationFilter)
+            header(Header("Content-Type", "application/json"))
+            header(Header("x-correlation-id", "3"))
+            body(
+                FinnYtelserForOrgnummerRequest(
+                    periode = Periode(LocalDate.now(), LocalDate.now()),
+                    ytelseskoder = listOf("AAP"),
+                    mottakere = listOf("123"),
+                    orgnummer = "orgnr"
+                )
+            )
+        } When {
+            post("/ur-ekstern/api/v1/finn-ytelser-for-orgnummer")
+        } Then {
+            statusCode(200)
+            assertEquals("123", jsonMapper.readValue<List<Mottaker>>(extract().body().asString())[0].mottakerId)
+        }
     }
+
+    private inline fun <reified T> ValidatableResponse.bodyAs(block: (T) -> Unit) =
+        block(jsonMapper.readValue<T>(extract().body().asString()))
 
 
     companion object {
+        private lateinit var embeddedServer: EmbeddedServer<NettyApplicationEngine, NettyApplicationEngine.Configuration>
+
         @JvmStatic
         @BeforeAll
         fun init() {
-            embeddedServer(Netty, PORT) {
-                installCommonFeatures()
-                urEksternApi(false, UrClient(Configuration.UrConfig(), setupMockHttpClient()))
-            }.start()
+            embeddedServer =
+                embeddedServer(Netty, PORT) {
+                    installCommonFeatures()
+                    urEksternApi(false, UrClient(Configuration.UrConfig(), setupMockHttpClient()))
+                }.start()
 
             RestAssured.baseURI = URL
             RestAssured.basePath = ""
@@ -124,6 +153,13 @@ class EksternApiKtTest {
             RestAssured.config = RestAssuredConfig.config().objectMapperConfig(
                 ObjectMapperConfig().jackson2ObjectMapperFactory { _, _ -> jsonMapper }
             )
+        }
+
+        @JvmStatic
+        @AfterAll
+        fun stopServer() {
+            RestAssured.reset()
+            embeddedServer.stop(gracePeriodMillis = 2000, timeoutMillis = 5000)
         }
     }
 }

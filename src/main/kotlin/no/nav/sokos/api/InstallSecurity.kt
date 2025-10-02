@@ -8,19 +8,19 @@ import io.ktor.server.auth.authenticate
 import io.ktor.server.auth.jwt.JWTPrincipal
 import io.ktor.server.auth.jwt.jwt
 import io.ktor.server.routing.Route
-import mu.KotlinLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 import no.nav.sokos.api.Sikkerhetskonfigurasjon.*
 import no.nav.sokos.config.Configuration
 
 private val logger = KotlinLogging.logger {}
 
-enum class Sikkerhetskonfigurasjon{ AZUREAD, MASKINPORTEN }
+enum class Sikkerhetskonfigurasjon { AZUREAD, MASKINPORTEN }
 
 fun Application.installSecurity(
     appConfig: Configuration
 ) {
     if (appConfig.useAuthentication) {
-        logger.info("Running with authentication")
+        logger.info { "Running with authentication" }
         install(Authentication) {
             jwt(MASKINPORTEN.name) {
                 verifier(
@@ -37,7 +37,7 @@ fun Application.installSecurity(
                             "Auth: Valid scope not found in claims".also { logger.info { it } }
                         }
                         JWTPrincipal(credentials.payload)
-                    } catch (e: Throwable) {
+                    } catch (_: Throwable) {
                         null
                     }
                 }
@@ -57,7 +57,7 @@ fun Application.installSecurity(
                             "Auth: Valid audience not found in claims".also { logger.info { it } }
                         }
                         JWTPrincipal(credentials.payload)
-                    } catch (e: Throwable) {
+                    } catch (_: Throwable) {
                         null
                     }
                 }

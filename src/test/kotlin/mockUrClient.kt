@@ -35,7 +35,6 @@ fun setupMockHttpClient(statusCode: HttpStatusCode = HttpStatusCode.OK): HttpCli
                 )
             }
         }
-
     }) {
         expectSuccess = false
         install(ContentNegotiation) {

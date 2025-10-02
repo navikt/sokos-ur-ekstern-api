@@ -1,6 +1,7 @@
 package no.nav.sokos.api
 
 import com.auth0.jwt.interfaces.Claim
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
 import io.ktor.server.application.ApplicationCall
@@ -18,9 +19,13 @@ import no.nav.sokos.api.entitet.FinnYtelserForOrgnummerRequest
 import no.nav.sokos.api.entitet.FinnYtelserRequest
 import no.nav.sokos.api.modell.FinnYtelser
 import no.nav.sokos.metrics.Metrics
-import no.nav.sokos.secureLogger
 import no.nav.sokos.ur.KlientFeil
 import no.nav.sokos.ur.UrClient
+import no.nav.sokos.logging.secureError
+import no.nav.sokos.logging.secureInfo
+import no.nav.sokos.logging.secureWarn
+
+private val logger = KotlinLogging.logger {}
 
 fun Application.urEksternApi(
     useAuthentication: Boolean = true,
@@ -31,7 +36,7 @@ fun Application.urEksternApi(
             route("ur-ekstern/api") {
                 post("v1/finn-ytelser") {
                     val orgnr = if (useAuthentication) call.hentHjemmelshaver()!! else "TEST"
-                    secureLogger.info ("$orgnr har gjort request: ${call.receiveText()}")
+                    call.receiveText().let { logger.secureInfo { "$orgnr har gjort request: $it" } }
                     val request: FinnYtelserRequest = call.receive()
                     try {
                         if (request.mottakere.size > 1000) {
@@ -42,10 +47,10 @@ fun Application.urEksternApi(
                         }
                     } catch (e: Exception) {
                         if (e is KlientFeil) {
-                            secureLogger.warn { "klientfeil ${e.feilmelding}" }
+                            logger.secureWarn { "klientfeil ${e.feilmelding}" }
                             call.respond(HttpStatusCode.Forbidden, e.feilmelding)
                         } else {
-                            secureLogger.error(e) { "Noe gikk galt" }
+                            logger.secureError(e) { "Noe gikk galt" }
                             call.respond(HttpStatusCode.InternalServerError, "noe gikk galt")
                         }
                     }
@@ -56,7 +61,7 @@ fun Application.urEksternApi(
             route("ur-ekstern/api") {
                 post("v1/finn-ytelser-for-orgnummer") {
                     val kallendeSystem = call.hentKallendeSystem()
-                    secureLogger.info("$kallendeSystem har gjort en request: ${call.receiveText()}")
+                    call.receiveText().let { logger.secureInfo { "$kallendeSystem har gjort en request: $it" } }
                     val request: FinnYtelserForOrgnummerRequest = call.receive()
                     try {
                         val orgnr = request.orgnummer
@@ -68,10 +73,10 @@ fun Application.urEksternApi(
                         }
                     } catch (e: Exception) {
                         if (e is KlientFeil) {
-                            secureLogger.warn { "klientfeil ${e.feilmelding}" }
+                            logger.secureWarn { "klientfeil ${e.feilmelding}" }
                             call.respond(HttpStatusCode.Forbidden, e.feilmelding)
                         } else {
-                            secureLogger.error(e) { "Noe gikk galt" }
+                            logger.secureError(e) { "Noe gikk galt" }
                             call.respond(HttpStatusCode.InternalServerError, "noe gikk galt")
                         }
                     }
