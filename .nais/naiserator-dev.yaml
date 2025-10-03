@@ -40,6 +40,9 @@ spec:
           namespace: team-emottak
           cluster: dev-fss
     outbound:
+      rules:
+        - application: logging
+          namespace: nais-system
       external:
         - ipv4: 155.55.1.82  # UR via zos-connect
           ports:
