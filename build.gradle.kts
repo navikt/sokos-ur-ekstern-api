@@ -2,7 +2,7 @@ group = "no.nav.sokos"
 version = "1.0-SNAPSHOT"
 
 plugins {
-    kotlin("jvm") version "2.1.0"
+    kotlin("jvm") version "2.2.20"
     id("com.gradleup.shadow") version "9.2.2"
 }
 
@@ -11,15 +11,15 @@ repositories {
 }
 
 val kotlinVersion = "2.2.20"
-val ktorVersion = "3.3.0"
+val ktorVersion = "3.3.1"
 val jacksonVersion = "2.20.0"
 val prometheusVersion = "1.15.4"
-val logbackVersion = "1.5.18"
+val logbackVersion = "1.5.19"
 val logstashVersion = "8.1"
 val kotlinLoggingVersion = "7.0.13"
 val commonsCodecVersion = "1.19.0"
 val nimbusVersion = "10.5"
-val junitVersion = "5.14.0"
+val junitVersion = "6.0.0"
 val restAssuredVersion = "5.5.6"
 val swaggerRequestValidatorVersion = "2.46.0"
 
