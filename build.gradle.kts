@@ -19,7 +19,7 @@ val logstashVersion = "9.0"
 val kotlinLoggingVersion = "7.0.13"
 val commonsCodecVersion = "1.19.0"
 val nimbusVersion = "10.5"
-val junitVersion = "6.0.0"
+val junitVersion = "6.0.1"
 val restAssuredVersion = "5.5.6"
 val swaggerRequestValidatorVersion = "2.46.0"
 
