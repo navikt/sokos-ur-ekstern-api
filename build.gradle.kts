@@ -11,15 +11,15 @@ repositories {
 }
 
 val kotlinVersion = "2.2.21"
-val ktorVersion = "3.3.1"
+val ktorVersion = "3.3.2"
 val jacksonVersion = "2.20.1"
-val prometheusVersion = "1.15.5"
+val prometheusVersion = "1.16.0"
 val logbackVersion = "1.5.20"
 val logstashVersion = "9.0"
 val kotlinLoggingVersion = "7.0.13"
-val commonsCodecVersion = "1.19.0"
-val nimbusVersion = "10.5"
-val junitVersion = "6.0.0"
+val commonsCodecVersion = "1.20.0"
+val nimbusVersion = "10.6"
+val junitVersion = "6.0.1"
 val restAssuredVersion = "5.5.6"
 val swaggerRequestValidatorVersion = "2.46.0"
 
