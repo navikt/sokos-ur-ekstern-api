@@ -3,7 +3,7 @@ version = "1.0-SNAPSHOT"
 
 plugins {
     kotlin("jvm") version "2.2.21"
-    id("com.gradleup.shadow") version "9.2.2"
+    id("com.gradleup.shadow") version "9.3.0"
 }
 
 repositories {
@@ -11,21 +11,21 @@ repositories {
 }
 
 val kotlinVersion = "2.2.21"
-val ktorVersion = "3.3.1"
+val ktorVersion = "3.3.3"
 val jacksonVersion = "2.20.1"
-val prometheusVersion = "1.15.5"
-val logbackVersion = "1.5.20"
+val prometheusVersion = "1.16.1"
+val logbackVersion = "1.5.22"
 val logstashVersion = "9.0"
 val kotlinLoggingVersion = "7.0.13"
-val commonsCodecVersion = "1.19.0"
-val nimbusVersion = "10.5"
-val junitVersion = "6.0.0"
+val commonsCodecVersion = "1.20.0"
+val nimbusVersion = "10.6"
+val junitVersion = "6.0.1"
 val restAssuredVersion = "5.5.6"
 val swaggerRequestValidatorVersion = "2.46.0"
 
 dependencies {
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
-    implementation(platform("io.netty:netty-bom:4.2.7.Final"))
+    implementation(platform("io.netty:netty-bom:4.2.8.Final"))
     implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
     implementation("io.ktor:ktor-server-call-id:$ktorVersion")
     implementation("io.ktor:ktor-server-call-logging:$ktorVersion")
