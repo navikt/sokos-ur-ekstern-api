@@ -11,8 +11,6 @@ spec:
   replicas:
     min: 2
     max: 2
-  secureLogs:
-    enabled: true
   resources:
     limits:
       memory: 1Gi
