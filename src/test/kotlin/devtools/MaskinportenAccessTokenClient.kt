@@ -58,9 +58,9 @@ data class MaskinportenClientConfig(
 ) : JwtConfig(authorityEndpoint)
 
 data class OpenIdConfiguration(
-    @JsonProperty("jwks_uri") val jwksUri: String,
-    @JsonProperty("issuer") val issuer: String,
-    @JsonProperty("token_endpoint") val tokenEndpoint: String,
+    @param:JsonProperty("jwks_uri") val jwksUri: String,
+    @param:JsonProperty("issuer") val issuer: String,
+    @param:JsonProperty("token_endpoint") val tokenEndpoint: String,
 )
 
 open class JwtConfig(wellKnownUrl: String) {
@@ -70,7 +70,7 @@ open class JwtConfig(wellKnownUrl: String) {
 }
 
 data class AccessToken(
-    @JsonAlias("access_token")
+    @param:JsonAlias("access_token")
     val accessToken: String
 )
 
