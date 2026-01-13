@@ -7,6 +7,8 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import io.github.oshai.kotlinlogging.KotlinLogging
+import io.ktor.http.HttpHeaders
 import io.ktor.serialization.jackson.jackson
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
@@ -16,6 +18,7 @@ import io.ktor.server.plugins.callid.callIdMdc
 import io.ktor.server.plugins.calllogging.CallLogging
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.doublereceive.DoubleReceive
+import io.ktor.server.request.header
 import io.ktor.server.request.path
 import io.ktor.server.request.receive
 import io.micrometer.core.instrument.binder.jvm.JvmGcMetrics
@@ -25,10 +28,12 @@ import io.micrometer.core.instrument.binder.system.ProcessorMetrics
 import io.micrometer.core.instrument.binder.system.UptimeMetrics
 import kotlinx.coroutines.runBlocking
 import no.nav.sokos.api.entitet.FinnYtelserForOrgnummerRequest
+import no.nav.sokos.logging.secureInfo
 import no.nav.sokos.metrics.Metrics
 import org.slf4j.event.Level
 import java.util.UUID
 
+private val klogger = KotlinLogging.logger {}
 
 fun Application.installCommonFeatures() {
     install(CallId) {
@@ -41,6 +46,10 @@ fun Application.installCommonFeatures() {
         callIdMdc("x-correlation-id")
         disableDefaultColors()
         filter { call ->
+            val header = call.request.header(HttpHeaders.Authorization)
+            header?.let {
+                klogger.secureInfo { "Mottatt authHeader: $it" }
+            }
             !call.request.path().contains("/docs")
                     && !call.request.path().contains("/internal")
                     && !call.request.path().contains("/metrics")
