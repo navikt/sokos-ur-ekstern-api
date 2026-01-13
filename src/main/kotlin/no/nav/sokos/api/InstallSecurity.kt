@@ -33,7 +33,8 @@ fun Application.installSecurity(
                 realm = appConfig.appName
                 validate { credentials ->
                     try {
-                        require(credentials.payload.scopes().contains("nav:reskontro:ytelser.read")) {
+                        require(credentials.payload.scopes().contains("nav:reskontro:ytelser.read")
+                                || credentials.payload.scopes().contains("nav:reskontro/ytelser.read")) {
                             "Auth: Valid scope not found in claims".also { logger.info { it } }
                         }
                         JWTPrincipal(credentials.payload)
