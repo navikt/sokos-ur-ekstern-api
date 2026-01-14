@@ -28,7 +28,7 @@ import io.micrometer.core.instrument.binder.system.ProcessorMetrics
 import io.micrometer.core.instrument.binder.system.UptimeMetrics
 import kotlinx.coroutines.runBlocking
 import no.nav.sokos.api.entitet.FinnYtelserForOrgnummerRequest
-import no.nav.sokos.logging.secureInfo
+import no.nav.sokos.logging.secureDebug
 import no.nav.sokos.metrics.Metrics
 import org.slf4j.event.Level
 import java.util.UUID
@@ -48,7 +48,7 @@ fun Application.installCommonFeatures() {
         filter { call ->
             val header = call.request.header(HttpHeaders.Authorization)
             header?.let {
-                klogger.secureInfo { "Mottatt authHeader: $it" }
+                klogger.secureDebug { "Mottatt authHeader: $it" }
             }
             !call.request.path().contains("/docs")
                     && !call.request.path().contains("/internal")
