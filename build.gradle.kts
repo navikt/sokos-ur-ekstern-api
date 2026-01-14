@@ -3,7 +3,7 @@ version = "1.0-SNAPSHOT"
 
 plugins {
     kotlin("jvm") version "2.3.0"
-    id("com.gradleup.shadow") version "9.3.0"
+    id("com.gradleup.shadow") version "9.3.1"
 }
 
 repositories {
@@ -14,12 +14,12 @@ val kotlinVersion = "2.3.0"
 val ktorVersion = "3.3.3"
 val jacksonVersion = "2.20.1"
 val prometheusVersion = "1.16.1"
-val logbackVersion = "1.5.23"
+val logbackVersion = "1.5.24"
 val logstashVersion = "9.0"
 val kotlinLoggingVersion = "7.0.14"
 val commonsCodecVersion = "1.20.0"
 val nimbusVersion = "10.6"
-val junitVersion = "6.0.1"
+val junitVersion = "6.0.2"
 val restAssuredVersion = "6.0.0"
 val swaggerRequestValidatorVersion = "2.46.0"
 
