@@ -28,16 +28,20 @@ fun Application.installSecurity(
                     appConfig.maskinportenServerConfig.issuer
                 )
                 {
-                    acceptLeeway(1)
+                    acceptLeeway(2)
                 }
                 realm = appConfig.appName
                 validate { credentials ->
-                    try {
-                        require(credentials.payload.scopes().contains("nav:reskontro:ytelser.read")) {
-                            "Auth: Valid scope not found in claims".also { logger.info { it } }
-                        }
+                    val requiredScopes = setOf(
+                        "nav:reskontro:ytelser.read",
+                        "nav:reskontro/ytelser.read"
+                    )
+                    val scopes = credentials.payload.scopes()
+
+                    if (scopes.any { it in requiredScopes }) {
                         JWTPrincipal(credentials.payload)
-                    } catch (_: Throwable) {
+                    } else {
+                        logger.warn { "JWT rejected: missing required scope. Scopes in token: $scopes" }
                         null
                     }
                 }
