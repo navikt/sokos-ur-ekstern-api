@@ -35,15 +35,6 @@
         </filter>
     </appender>
 
-    <logger name="io.ktor.server.auth.jwt" level="DEBUG">
-        <appender-ref ref="${LOG_APPENDER:-stdout_json}"/>
-    </logger>
-
-    <logger name="no.nav.sokos.api" level="DEBUG" additivity="false">
-        <appender-ref ref="${LOG_APPENDER:-stdout_json}"/>
-        <appender-ref ref="team-logs" />
-    </logger>
-
     <root level="info">
         <appender-ref ref="${LOG_APPENDER:-stdout_json}"/>
         <appender-ref ref="team-logs" />
