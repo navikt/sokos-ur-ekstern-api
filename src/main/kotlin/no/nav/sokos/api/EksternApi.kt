@@ -47,7 +47,7 @@ fun Application.urEksternApi(
                         }
                     } catch (e: Exception) {
                         if (e is KlientFeil) {
-                            logger.secureWarn { "klientfeil ${e.feilmelding}" }
+                            logger.secureWarn { e.feilmelding }
                             call.respond(HttpStatusCode.Forbidden, e.feilmelding)
                         } else {
                             logger.secureError(e) { "Noe gikk galt" }
@@ -73,7 +73,7 @@ fun Application.urEksternApi(
                         }
                     } catch (e: Exception) {
                         if (e is KlientFeil) {
-                            logger.secureWarn { "klientfeil ${e.feilmelding}" }
+                            logger.secureWarn { e.feilmelding }
                             call.respond(HttpStatusCode.Forbidden, e.feilmelding)
                         } else {
                             logger.secureError(e) { "Noe gikk galt" }
