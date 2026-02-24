@@ -2,30 +2,30 @@ group = "no.nav.sokos"
 version = "1.0-SNAPSHOT"
 
 plugins {
-    kotlin("jvm") version "2.3.0"
-    id("com.gradleup.shadow") version "9.3.0"
+    kotlin("jvm") version "2.3.10"
+    id("com.gradleup.shadow") version "9.3.1"
 }
 
 repositories {
     mavenCentral()
 }
 
-val kotlinVersion = "2.3.0"
-val ktorVersion = "3.3.3"
-val jacksonVersion = "2.20.1"
-val prometheusVersion = "1.16.1"
-val logbackVersion = "1.5.23"
+val kotlinVersion = "2.3.10"
+val ktorVersion = "3.4.0"
+val jacksonVersion = "2.21.0"
+val prometheusVersion = "1.16.3"
+val logbackVersion = "1.5.32"
 val logstashVersion = "9.0"
-val kotlinLoggingVersion = "7.0.14"
-val commonsCodecVersion = "1.20.0"
-val nimbusVersion = "10.6"
-val junitVersion = "6.0.1"
+val kotlinLoggingVersion = "8.0.01"
+val commonsCodecVersion = "1.21.0"
+val nimbusVersion = "10.7"
+val junitVersion = "6.0.3"
 val restAssuredVersion = "6.0.0"
 val swaggerRequestValidatorVersion = "2.46.0"
 
 dependencies {
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
-    implementation(platform("io.netty:netty-bom:4.2.9.Final"))
+    implementation(platform("io.netty:netty-bom:4.2.10.Final"))
     implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
     implementation("io.ktor:ktor-server-call-id:$ktorVersion")
     implementation("io.ktor:ktor-server-call-logging:$ktorVersion")
