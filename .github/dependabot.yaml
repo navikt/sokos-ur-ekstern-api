@@ -8,6 +8,19 @@ updates:
       default-days: 7
     open-pull-requests-limit: 10
     groups:
-      gradle:
-        patterns:
-          - "*"
+      all-minor-updates:
+        update-types:
+          - "minor"
+          - "patch"
+
+  -  package-ecosystem: github-actions
+     directory: "/"
+     schedule:
+       interval: "weekly"
+     cooldown:
+       default-days: 7
+     groups:
+       all-minor-updates:
+         update-types:
+           - "minor"
+           - "patch"
