@@ -15,6 +15,6 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '21'
-      - uses: gradle/gradle-build-action@842c587ad8aa4c68eeba24c396e15af4c2e9f30a # ratchet:gradle/gradle-build-action@v2.9.0
+      - uses: gradle/gradle-build-action@ac2d340dc04d9e1113182899e983b5400c17cda1 # ratchet:gradle/gradle-build-action@v3.5.0
         with:
           arguments: build shadowjar
