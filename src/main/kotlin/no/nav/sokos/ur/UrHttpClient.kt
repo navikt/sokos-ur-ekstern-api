@@ -1,7 +1,7 @@
 package no.nav.sokos.ur
 
 import io.ktor.client.HttpClient
-import io.ktor.client.engine.apache.Apache
+import io.ktor.client.engine.apache5.Apache5
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.DEFAULT
@@ -11,14 +11,14 @@ import io.ktor.client.plugins.logging.Logging
 import io.ktor.serialization.jackson.jackson
 import no.nav.sokos.config.Configuration
 import no.nav.sokos.customConfig
-import org.apache.http.impl.conn.SystemDefaultRoutePlanner
+import org.apache.hc.client5.http.impl.routing.SystemDefaultRoutePlanner
 import java.io.FileInputStream
 import java.net.ProxySelector
 import java.security.KeyStore
 import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManagerFactory
 
-fun urHttpClient(urConfig: Configuration.UrConfig) = HttpClient(Apache) {
+fun urHttpClient(urConfig: Configuration.UrConfig) = HttpClient(Apache5) {
     engine {
         sslContext = sslContext(urConfig)
         customizeClient {

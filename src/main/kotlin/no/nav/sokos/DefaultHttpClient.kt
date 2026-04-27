@@ -6,12 +6,12 @@ import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.ktor.client.HttpClient
-import io.ktor.client.engine.apache.Apache
+import io.ktor.client.engine.apache5.Apache5
 import io.ktor.client.plugins.HttpRequestRetry
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.jackson.jackson
+import org.apache.hc.client5.http.impl.routing.SystemDefaultRoutePlanner
 import java.net.ProxySelector
-import org.apache.http.impl.conn.SystemDefaultRoutePlanner
 
 fun ObjectMapper.customConfig() {
     registerModule(JavaTimeModule())
@@ -21,7 +21,7 @@ fun ObjectMapper.customConfig() {
 
 val jsonMapper: ObjectMapper = jacksonObjectMapper().apply { customConfig() }
 
-val defaultHttpClient = HttpClient(Apache) {
+val defaultHttpClient = HttpClient(Apache5) {
     install(ContentNegotiation){
         jackson {
             customConfig()

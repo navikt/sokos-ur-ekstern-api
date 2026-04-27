@@ -16,7 +16,7 @@ val jacksonVersion = "2.21.2"
 val prometheusVersion = "1.16.4"
 val logbackVersion = "1.5.32"
 val logstashVersion = "9.0"
-val kotlinLoggingVersion = "7.0.14"
+val kotlinLoggingVersion = "8.0.01"
 val commonsCodecVersion = "1.21.0"
 val nimbusVersion = "10.9"
 val junitVersion = "6.0.3"
@@ -33,7 +33,7 @@ dependencies {
     implementation("io.ktor:ktor-server-auth-jwt:$ktorVersion")
     implementation("io.ktor:ktor-server-double-receive:$ktorVersion")
     implementation("io.ktor:ktor-server-swagger:$ktorVersion")
-    implementation("io.ktor:ktor-client-apache:$ktorVersion")
+    implementation("io.ktor:ktor-client-apache5:$ktorVersion")
     implementation("io.ktor:ktor-client-logging:$ktorVersion")
     implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
     implementation("io.ktor:ktor-client-jackson:$ktorVersion")
