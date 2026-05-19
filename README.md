@@ -9,3 +9,8 @@ Maskinporten miljøvariabler kan hentes ved å kjøre:
 ```sh
 kubectl exec -nokonomi -it $(kubectl get pods -nokonomi | grep sokos-ur-ekstern-api | cut -f1 -d' ') -- env | egrep "^MASKIN"
 ```
+
+## Ytelseskoder/typer
+| Ytelses-kode | Beskrivelse | Delytelser|
+| :--- | :--- | :--- |
+| AAP                        | Arbeidsavklaringspenger       | Eksempel      |
