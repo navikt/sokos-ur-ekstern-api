@@ -14,9 +14,9 @@ val kotlinVersion = "2.3.21"
 val ktorVersion = "3.5.0"
 val jacksonVersion = "2.21.3"
 val prometheusVersion = "1.16.5"
-val logbackVersion = "1.5.32"
+val logbackVersion = "1.5.33"
 val logstashVersion = "9.0"
-val kotlinLoggingVersion = "8.0.03"
+val kotlinLoggingVersion = "8.0.4"
 val commonsCodecVersion = "1.22.0"
 val nimbusVersion = "10.9"
 val junitVersion = "6.1.0"
@@ -25,7 +25,7 @@ val swaggerRequestValidatorVersion = "2.46.1"
 
 dependencies {
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
-    implementation(platform("io.netty:netty-bom:4.2.13.Final"))
+    implementation(platform("io.netty:netty-bom:4.2.14.Final"))
     implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
     implementation("io.ktor:ktor-server-call-id:$ktorVersion")
     implementation("io.ktor:ktor-server-call-logging:$ktorVersion")
