@@ -21,7 +21,7 @@ val commonsCodecVersion = "1.22.0"
 val nimbusVersion = "10.9"
 val junitVersion = "6.1.0"
 val restAssuredVersion = "6.0.0"
-val swaggerRequestValidatorVersion = "2.46.1"
+val swaggerRequestValidatorVersion = "3.0.0"
 
 dependencies {
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
