@@ -12,11 +12,16 @@ on:
       - '.gitignore'
       - '.editorconfig'
       - '.github/workflows/build-pr.yaml'
-      - '.github/workflows/manual-deploy.yaml'
       - '.github/workflows/security.yaml'
       - '.github/workflows/alertschema.yaml'
       - '.nais/alerterator.yaml'
       - '.github/dependabot.yaml'
+
+  workflow_dispatch:
+
+  schedule:
+    # Deploy den 3. i hver måned kl. 08.04 (så er vi innafor "bygg og deploy minst hver 3. måned"-etterlevelseskravet)
+    - cron: "4 8 3 * *"
 
 env:
   TZ: Europe/Oslo
