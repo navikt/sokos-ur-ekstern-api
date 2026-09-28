@@ -86,6 +86,7 @@ fun Application.installCommonFeatures() {
             }
             tag("orgnr", orgnr)
             tag("konsument", call.hentKallendeSystem() ?: "EKSTERN")
+            tag("leverandor", call.hentLeverandor() ?: "INGEN")
         }
 
     }
