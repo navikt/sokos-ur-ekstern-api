@@ -35,15 +35,22 @@ fun Application.urEksternApi(
         authenticate(useAuthentication, MASKINPORTEN.name) {
             route("ur-ekstern/api") {
                 post("v1/finn-ytelser") {
-                    val orgnr = if (useAuthentication) call.hentHjemmelshaver()!! else "TEST"
-                    call.receiveText().let { logger.secureInfo { "$orgnr har gjort request: $it" } }
+                    val hjemmelshaver = if (useAuthentication) call.hentHjemmelshaver()!! else "TEST"
+                    val leverandor = if (useAuthentication) call.hentLeverandor() else "TEST"
+                    call.receiveText().let { requestAsText ->
+                        logger.secureInfo {
+                            if (leverandor != null) "$leverandor har gjort request på vegne av hjemmelshaver $hjemmelshaver: $requestAsText"
+                            else "$hjemmelshaver har gjort request: $requestAsText"
+                        }
+                    }
+
                     val request: FinnYtelserRequest = call.receive()
                     try {
                         if (request.mottakere.size > 1000) {
                             call.respond(HttpStatusCode.BadRequest, "Maks antall mottakere i en request er 1000.")
                         } else {
-                            incrementYtelsestyeMetrikker(request.ytelseskoder, orgnr)
-                            call.respond(urClient.finnYtelser(FinnYtelser(orgnr, request)))
+                            incrementYtelsestyeMetrikker(request.ytelseskoder, hjemmelshaver)
+                            call.respond(urClient.finnYtelser(FinnYtelser(hjemmelshaver, request)))
                         }
                     } catch (e: Exception) {
                         if (e is KlientFeil) {
@@ -96,7 +103,12 @@ fun ApplicationCall.hentHjemmelshaver(): String? {
     val consumer: Claim? = this.authentication.principal<JWTPrincipal>()?.payload?.claims?.get("consumer")
     val consumerId = consumer?.asMap()?.get("ID")?.toString()?.split(":")?.last()
     return consumerId
+}
 
+fun ApplicationCall.hentLeverandor(): String? {
+    val supplier: Claim? = this.authentication.principal<JWTPrincipal>()?.payload?.claims?.get("supplier")
+    val supplierId = supplier?.asMap()?.get("ID")?.toString()?.split(":")?.last()
+    return supplierId
 }
 
 fun ApplicationCall.hentKallendeSystem(): String? {
