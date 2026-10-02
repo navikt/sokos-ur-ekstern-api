@@ -35,8 +35,6 @@
         </filter>
     </appender>
 
-    <logger name="no.nav.sokos.api" level="debug"/>
-
     <root level="info">
         <appender-ref ref="${LOG_APPENDER:-stdout_json}"/>
         <appender-ref ref="team-logs" />
