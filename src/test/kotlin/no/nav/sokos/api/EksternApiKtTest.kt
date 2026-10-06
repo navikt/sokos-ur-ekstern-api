@@ -25,6 +25,9 @@ import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
+import MOTTAKER_MED_DATA
+import MOTTAKER_KLIENTFEIL
+import MOTTAKER_MANGLER_DATA
 import setupMockHttpClient
 import java.time.LocalDate
 
@@ -45,7 +48,7 @@ class EksternApiKtTest {
                 FinnYtelserRequest(
                     periode = Periode(LocalDate.now(), LocalDate.now()),
                     ytelseskoder = listOf("AAP"),
-                    mottakere = listOf("123")
+                    mottakere = listOf(MOTTAKER_MED_DATA)
                 )
             )
         } When {
@@ -71,7 +74,7 @@ class EksternApiKtTest {
                 FinnYtelserRequest(
                     periode = Periode(LocalDate.now(), LocalDate.now()),
                     ytelseskoder = listOf("AAP"),
-                    mottakere = listOf("MANGLER")
+                    mottakere = listOf(MOTTAKER_MANGLER_DATA)
                 )
             )
         } When {
@@ -97,7 +100,7 @@ class EksternApiKtTest {
                 FinnYtelserRequest(
                     periode = Periode(LocalDate.now(), LocalDate.now()),
                     ytelseskoder = listOf("AAP"),
-                    mottakere = listOf("FEIL")
+                    mottakere = listOf(MOTTAKER_KLIENTFEIL)
                 )
             )
         } When {
@@ -118,8 +121,8 @@ class EksternApiKtTest {
                 FinnYtelserForOrgnummerRequest(
                     periode = Periode(LocalDate.now(), LocalDate.now()),
                     ytelseskoder = listOf("AAP"),
-                    mottakere = listOf("123"),
-                    orgnummer = "orgnr"
+                    mottakere = listOf(MOTTAKER_MED_DATA),
+                    orgnummer = "889640782"
                 )
             )
         } When {
@@ -127,6 +130,51 @@ class EksternApiKtTest {
         } Then {
             statusCode(200)
             assertEquals("123", jsonMapper.readValue<List<Mottaker>>(extract().body().asString())[0].mottakerId)
+        }
+    }
+
+    @Test
+    fun `ur-ekstern-api gir 400 ved ugyldig request`() {
+        Given {
+            header(Header("Content-Type", "application/json"))
+            header(Header("x-correlation-id", "3"))
+            body(
+                FinnYtelserRequest(
+                    periode = Periode(LocalDate.now(), LocalDate.now().minusDays(1)),
+                    ytelseskoder = listOf("AAP"),
+                    mottakere = listOf(MOTTAKER_MED_DATA, "123")
+                )
+            )
+        } When {
+            post("/ur-ekstern/api/v1/finn-ytelser")
+        } Then {
+            statusCode(400)
+            assertEquals(
+                "Ugyldig periode: fom kan ikke være etter tom.\n" +
+                        "Alle mottakere må bestå av nøyaktig 11 siffer.",
+                extract().body().asString()
+            )
+        }
+    }
+
+    @Test
+    fun `ur-ekstern-api med orgnummer gir 400 ved ugyldig orgnummer`() {
+        Given {
+            header(Header("Content-Type", "application/json"))
+            header(Header("x-correlation-id", "3"))
+            body(
+                FinnYtelserForOrgnummerRequest(
+                    periode = Periode(LocalDate.now(), LocalDate.now()),
+                    ytelseskoder = listOf("AAP"),
+                    mottakere = listOf(MOTTAKER_MED_DATA),
+                    orgnummer = "orgnr"
+                )
+            )
+        } When {
+            post("/ur-ekstern/api/v1/finn-ytelser-for-orgnummer")
+        } Then {
+            statusCode(400)
+            assertEquals("Orgnummer må bestå av nøyaktig 9 siffer.", extract().body().asString())
         }
     }
 
