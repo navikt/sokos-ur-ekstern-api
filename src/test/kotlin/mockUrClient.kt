@@ -9,18 +9,22 @@ import io.ktor.http.headersOf
 import io.ktor.serialization.jackson.jackson
 import no.nav.sokos.customConfig
 
+const val MOTTAKER_MED_DATA = "12345678901"
+const val MOTTAKER_MANGLER_DATA = "00000000001"
+const val MOTTAKER_KLIENTFEIL = "00000000002"
+
 fun setupMockHttpClient(statusCode: HttpStatusCode = HttpStatusCode.OK): HttpClient {
     return HttpClient(MockEngine { request ->
         val content = String(request.body.toByteArray())
         when {
-            content.contains("MANGLER") -> {
+            content.contains(MOTTAKER_MANGLER_DATA) -> {
                 respond(
                     content = requestManglerData,
                     headers = headersOf("Content-Type", ContentType.Application.Json.toString()),
                     status = statusCode
                 )
             }
-            content.contains("FEIL") -> {
+            content.contains(MOTTAKER_KLIENTFEIL) -> {
                 respond(
                     content = requestMedKlientFeil,
                     headers = headersOf("Content-Type", ContentType.Application.Json.toString()),

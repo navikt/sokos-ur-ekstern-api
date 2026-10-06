@@ -18,6 +18,7 @@ import no.nav.sokos.api.Sikkerhetskonfigurasjon.MASKINPORTEN
 import no.nav.sokos.api.entitet.FinnYtelserForOrgnummerRequest
 import no.nav.sokos.api.entitet.FinnYtelserRequest
 import no.nav.sokos.api.modell.FinnYtelser
+import no.nav.sokos.api.validering.validerRequest
 import no.nav.sokos.metrics.Metrics
 import no.nav.sokos.ur.KlientFeil
 import no.nav.sokos.ur.UrClient
@@ -46,8 +47,9 @@ fun Application.urEksternApi(
 
                     val request: FinnYtelserRequest = call.receive()
                     try {
-                        if (request.mottakere.size > 1000) {
-                            call.respond(HttpStatusCode.BadRequest, "Maks antall mottakere i en request er 1000.")
+                        val valideringsfeil = request.validerRequest()
+                        if (valideringsfeil.isNotEmpty()) {
+                            return@post call.respondValideringsfeil(valideringsfeil)
                         } else {
                             incrementYtelsestyeMetrikker(request.ytelseskoder, hjemmelshaver)
                             call.respond(urClient.finnYtelser(FinnYtelser(hjemmelshaver, request)))
@@ -72,8 +74,9 @@ fun Application.urEksternApi(
                     val request: FinnYtelserForOrgnummerRequest = call.receive()
                     try {
                         val orgnr = request.orgnummer
-                        if (request.mottakere.size > 1000) {
-                            call.respond(HttpStatusCode.BadRequest, "Maks antall mottakere i en request er 1000.")
+                        val valideringsfeil = request.validerRequest()
+                        if (valideringsfeil.isNotEmpty()) {
+                            call.respondValideringsfeil(valideringsfeil)
                         } else {
                             incrementYtelsestyeMetrikker(request.ytelseskoder, orgnr)
                             call.respond(urClient.finnYtelser(FinnYtelser(request)))
@@ -91,6 +94,12 @@ fun Application.urEksternApi(
             }
         }
     }
+}
+
+private suspend fun ApplicationCall.respondValideringsfeil(valideringsfeil: List<String>) {
+    val feilmelding = valideringsfeil.joinToString("\n")
+    logger.secureWarn { "Ugyldig request: $feilmelding" }
+    respond(HttpStatusCode.BadRequest, feilmelding)
 }
 
 private fun incrementYtelsestyeMetrikker(ytelesesKoder: List<String>?, orgnr: String) {
