@@ -44,7 +44,7 @@ paths:
             text/plain:
               schema:
                 type: string
-                example: 'Det må oppgis minst én mottaker.'
+                example: 'Ugyldig periode: fom kan ikke være etter tom.'
         401:
           description: Uautorisert
           content:
