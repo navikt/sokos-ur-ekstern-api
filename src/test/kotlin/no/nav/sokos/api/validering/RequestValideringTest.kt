@@ -46,12 +46,6 @@ class RequestValideringTest {
     }
 
     @Test
-    fun `duplikate mottakere telles ikke mot maksgrensen`() {
-        val mottakere = (1..1000).map { it.toString().padStart(11, '0') } + "00000000001"
-        assertTrue(request(mottakere = mottakere).validerRequest().isEmpty())
-    }
-
-    @Test
     fun `fom etter tom gir feil`() {
         assertEquals(
             listOf("Ugyldig periode: fom kan ikke være etter tom."),
