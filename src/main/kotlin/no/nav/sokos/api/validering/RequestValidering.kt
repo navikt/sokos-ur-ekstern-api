@@ -31,7 +31,7 @@ private fun validerMottakere(mottakere: List<String>): List<String> {
     if (mottakere.isEmpty()) return emptyList()
 
     return buildList {
-        if (mottakere.distinct().size > MAKS_ANTALL_MOTTAKERE) {
+        if (mottakere.size > MAKS_ANTALL_MOTTAKERE) {
             add("Maks antall mottakere i en request er $MAKS_ANTALL_MOTTAKERE.")
         }
 
