@@ -15,7 +15,7 @@ class FinnYtelser(
         request.orgnummer,
         request.periode.fom,
         request.periode.tom,
-        request.mottakere,
+        request.mottakere.distinct(),
         request.ytelseskoder
     )
 
@@ -23,7 +23,7 @@ class FinnYtelser(
         orgnummer,
         request.periode.fom,
         request.periode.tom,
-        request.mottakere,
+        request.mottakere.distinct(),
         request.ytelseskoder
     )
 }
